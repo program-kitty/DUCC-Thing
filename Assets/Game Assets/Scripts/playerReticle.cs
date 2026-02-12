@@ -15,19 +15,22 @@ using System.Collections;
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(RectTransform))]
 public class playerReticle : MonoBehaviour {
+    [Header("Game Settings")]
+    [SerializeField] bool isLocalAim;  // Right-stick aim type
+    public float aimSensitivity = 1f;
+    
     [Header("Objects")]
-    Camera cam;
-    [SerializeField] GameObject gunMuzzle;
-    [SerializeField] GameObject gunOrigin;
+    [SerializeField] Transform gunMuzzle;  // Where to spawn the projectile
+    [SerializeField] Transform gunOrigin;  // Gun itself
     [SerializeField] GameObject playerObject;
+    [SerializeField] GameObject projectilePrefab;  // Object to shoot when fired
+    Camera cam;
+    
+    Vector3 projectileVelocity;
     
     [Header("Components")]
     Image reticleSprite;
     RectTransform transformData;
-    
-    [Header("Game Settings")]
-    [SerializeField] bool isLocalAim = true;  // Right-stick aim type
-    public int aimSensitivity = 1;
 
     [Header("Input Actions")]
     InputAction aimAction;
@@ -35,38 +38,51 @@ public class playerReticle : MonoBehaviour {
     InputAction toggleAimAction;
 
     [Header("Aiming System")]
-    [SerializeField] Transform targetPoint;  // What to shoot at
-    [SerializeField] float targetDistance;
-    [SerializeField] float SMOOTH_TIME = 0.2f;  // How snappy is target acquisition?
-    [SerializeField] Vector2 AIM_LIMIT = new Vector2(50f, 20f);  // Where on the screen can the player aim?
-    [SerializeField] float aimSpeed = 10f;
-
-    [Header("Projectile")]
-    [SerializeField] GameObject projectilePrefab;  // Object to shoot when fired
-    [SerializeField] Transform firePoint;  // Where to spawn the projectile
-
-    [Header("???")]
-    Vector3 velocity;
-    Vector2 aimOffset;
+    [SerializeField] float localSmoothTime = 0.1f;
+    [SerializeField] float globalSmoothTime = 0.3f;
+    Vector2 aimCoordinate;  // The on-screen coordinate of the reticle. Should be identical to transformData.position
+    Vector3 targetPoint;  // World coordinate the reticle is pointing at
+    private Vector2 velocity = Vector2.zero;  // Used by SmoothDamp, do not modify!
+    
 
 
     #region Input Actions
 
-    public event Action Aim;
-    public event Action Attack;
-    public event Action ToggleAimMode;
+    // public event Action Aim;
+    // public event Action Attack;
+    // public event Action ToggleAimMode;
 
-    void OnAttack(InputAction.CallbackContext context) => Attack?.Invoke();
-    void OnToggleAimMode(InputAction.CallbackContext context) => ToggleAimMode?.Invoke();
+    // void OnAim(InputAction.CallbackContext context) => Aim?.Invoke();
+    // void OnAttack(InputAction.CallbackContext context) => Attack?.Invoke();
+    // void OnToggleAimMode(InputAction.CallbackContext context) => ToggleAimMode?.Invoke();
 
-    void OnAttack() {
-        var direction = targetPoint.position - firePoint.position;
+    // Only called when input is detected, rather than every frame
+
+    // public void OnAim(InputAction.CallbackContext context) {
+    //     Vector2 aimInput = context.ReadValue<Vector2>();  // Read stick input
+
+    //     // Set position based on Right Stick input
+    //     if (isLocalAim) {
+    //         aimCoordinate.x = aimInput.x * aimSensitivity + transformData.position.x; // Add value to X position
+    //         aimCoordinate.y = aimInput.y * aimSensitivity + transformData.position.y; // Add value to Y position
+    //     } else {
+    //         aimCoordinate.x = aimInput.x * Screen.width  / 2; // Add value to X position
+    //         aimCoordinate.y = aimInput.y * Screen.height / 2; // Add value to Y position
+    //     }
+    //     transformData.position = new Vector3(aimCoordinate.x, aimCoordinate.y, 0); // Directly set value
+    //     // transformData.position = Vector3.MoveTowards(transformData.position, hit.point, aimSpeed * time.deltaTime);
+
+    //     Debug.Log($"Reticle coordinates: {aimCoordinate}");
+    // }
+    
+    void OnAttack(InputAction.CallbackContext context) {
+        var direction = targetPoint - gunMuzzle.position;
         var rotation = Quaternion.LookRotation(direction);
-        var projectile = Instantiate(projectilePrefab, firePoint.position, rotation);
+        var projectile = Instantiate(projectilePrefab, gunMuzzle.position, rotation);
         Destroy(projectile, 5f);  // Destroy after 5 seconds
     }
 
-    void OnToggleAimMode() {
+    void OnToggleAimMode(InputAction.CallbackContext context) {
         isLocalAim = !isLocalAim;
     }
 
@@ -74,35 +90,34 @@ public class playerReticle : MonoBehaviour {
     #region Functions
 
     void Awake() {
+        targetPoint = Vector3.zero;  // Reset Target Point
+        
         // Find the references to the InputSystem actions
         aimAction = InputSystem.actions.FindAction("Aim");
         attackAction = InputSystem.actions.FindAction("Attack");
         toggleAimAction = InputSystem.actions.FindAction("Toggle Aim Mode");
-
-        // aimAction.performed += OnAim;
-        attackAction.performed += OnAttack;
-        toggleAimAction.performed += OnToggleAimMode;
     }
-
 
     void OnEnable() {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
         // aimAction.performed += OnAim;
         attackAction.performed += OnAttack;
         toggleAimAction.performed += OnToggleAimMode;
     }
 
-
     void OnDisable() {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         // aimAction.performed -= OnAim;
         attackAction.performed -= OnAttack;
         toggleAimAction.performed -= OnToggleAimMode;
     }
 
-
     void Start() {
-        // Hide mouse
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        isLocalAim = true;
 
         cam = Camera.main;
         if (cam == null) { Debug.LogError("No main camera was found!"); }  // Make sure camera exists
@@ -111,88 +126,77 @@ public class playerReticle : MonoBehaviour {
         transformData = GetComponent<RectTransform>();
     }
 
-
     void Update() {
-        // Read and Process Inputs
-        Vector2 aimCoordinate = aimAction.ReadValue<Vector2>();  // Read stick input
-        Debug.Log($"Aim coordinates: {aimCoordinate}");
-        
-        Vector2 cursorLocation = new Vector2(cam.pixelWidth * aimCoordinate.x, cam.pixelHeight * aimCoordinate.y);  // Set Cursor pixel display coordinates
-
-
-        // if (toggleAimAction.ReadValue<float>() > 0) {isLocalAim = !isLocalAim;}
+        // Update Reticle Position
+        Vector2 aimInput = aimAction.ReadValue<Vector2>();  // Read stick input
 
         // Set position based on Right Stick input
-        // if (isLocalAim) {
-        //     aimCoordinate.x = aimCoordinate.x * aimSensitivity + transformData.localPosition.x; // Add value to X position
-        //     aimCoordinate.y = aimCoordinate.y * aimSensitivity + transformData.localPosition.y; // Add value to Y position
-        // } else {
-        //     aimCoordinate.x = aimCoordinate.x * Screen.width  / 2; // Add value to X position
-        //     aimCoordinate.y = aimCoordinate.y * Screen.height / 2; // Add value to Y position
-        // }
-        
-        // Cast ray from cursor
+        Vector2 newAimCoordinate;
+        // float smoothTime;
+        if (isLocalAim) {
+            aimCoordinate.x = aimInput.x * aimSensitivity + transformData.position.x; // Add value to X position
+            aimCoordinate.y = aimInput.y * aimSensitivity + transformData.position.y; // Add value to Y position
+        } else {
+            newAimCoordinate.x = aimInput.x * Screen.width  / 2 + Screen.width  / 2; // Add value to X position
+            newAimCoordinate.y = aimInput.y * Screen.height / 2 + Screen.height / 2; // Add value to Y position
+            // smoothTime = globalSmoothTime;
+            aimCoordinate = Vector2.SmoothDamp(aimCoordinate, newAimCoordinate, ref velocity, globalSmoothTime);
+        }
+        // aimCoordinate = Vector2.SmoothDamp(aimCoordinate, newAimCoordinate, ref velocity, smoothTime);
+
+        // Clamp values to screen size
+        aimCoordinate.x = Mathf.Clamp(aimCoordinate.x, 0, Screen.width);
+        aimCoordinate.y = Mathf.Clamp(aimCoordinate.y, 0, Screen.height);
+
+        transformData.position = new Vector3(aimCoordinate.x, aimCoordinate.y, 0); // Directly set value
+        // transformData.position = Vector3.MoveTowards(transformData.position, hit.point, aimSpeed * time.deltaTime);
+        Debug.Log($"Reticle coordinates: {aimCoordinate}");
+
+
+        // Cast ray from reticle
         RaycastHit hit;
-        Ray ray = cam.ScreenPointToRay(cursorLocation);
+        Ray ray = cam.ScreenPointToRay(aimCoordinate);
         
         if (Physics.Raycast(ray, out hit)) {
-            Transform objectHit = hit.transform;  // Get the Transform component of the hit object (this is like... the soul of a Unity object, kinda separate from itself?)
-            targetPoint = hit.transform;
-            // Determine hit object's faction
-
+            targetPoint = hit.point;  // Update targetPoint
+            Transform objectHit = hit.transform;  // Get the Transform component of the hit object
 
             // Change reticle color based on target's faction
-            if (objectHit.tag == "enemy") {
-                reticleSprite.color = Color.red;
-            } else if (objectHit.tag == "ally") {
-                reticleSprite.color = Color.green;
-            } else {
-                reticleSprite.color = Color.white;
+            switch (objectHit.tag) {
+                case "Player":
+                case "ally":
+                    reticleSprite.color = Color.green;
+                    break;
+                case "enemy":
+                    reticleSprite.color = Color.red;
+                    break;
+                case "Skybox":
+                    reticleSprite.color = Color.gray;
+                    break;
+                default:
+                    reticleSprite.color = Color.white;
+                    break;
             }
+
+            // Gizmos
+            Debug.DrawRay(ray.origin, ray.direction * 10, reticleSprite.color);
+        } else {
+            Debug.LogError("Raycast failed: Ensure map geometry is encased in a box so raycasts can still hit objects.");
         }
-
-
-        transformData.localPosition = new Vector3(cursorLocation.x, cursorLocation.y, 0); // Directly set value
-        // transformData.position = Vector3.MoveTowards(transformData.position, hit.point, aimSpeed * time.deltaTime);
-        // StartCoroutine( VisualBeam(transformData.localPosition, hit.point) );
-        // Debug.DrawRay(transform.position, Vector3.forward, Color.green);
     }
+
+
+    void OnDrawGizmos() {
+        if (reticleSprite != null) { Gizmos.color = reticleSprite.color; }
+        Gizmos.DrawWireSphere(targetPoint, 0.1f);  // Draw wire sphere outline.
+    }
+
     #endregion
-    #region Subroutines
+    #region Public Callable Functions
 
-    // Vector3 RayCastLookingAt() {  // Returns the point the center of the camera is looking at
-    //     Vector2 cameraSpot = new Vector2(cam.pixelWidth/2, cam.pixelHeight/2);
-    //     return RayCastLookingAt(cameraSpot);
-    // }
-    
-    // Vector3 RayCastLookingAt(Vector2 cameraSpot) {  // Returns the point the selected pixel of the camera is looking at
-    //     Vector3 point = new Vector3(cameraSpot.x, cameraSpot.y, 0);
-    //     Ray ray = cam.ScreenPointToRay(point);
-    //     RaycastHit hit;
-    //     if (Physics.Raycast(ray, out hit)) {
-    //         return hit.point;
-    //     } else { return Vector3.forward; }
-    // }
+    public Vector3 GetAimPos() { return targetPoint; }
 
-    
-    // IEnumerator VisualBeam(Vector3 startPoint, Vector3 endPoint) {  // Display a line between two points. Useful for debugging Raycasts.
-    //     LineRenderer lineRenderer = gunMuzzle.AddComponent<LineRenderer>(); // create raygun beam object
-        
-    //     // Apply settings
-    //     lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-    //     lineRenderer.startColor = Color.red;
-    //     lineRenderer.endColor = Color.yellow;
-    //     lineRenderer.startWidth = 0.2f;
-    //     lineRenderer.endWidth = 0.1f;
-    //     lineRenderer.positionCount = 2; // Set line to be only two points
+    // public void SetAimSensitivity(float sensitivity) { aimSensitivity = sensitivity; }
 
-        
-    //     lineRenderer.SetPosition(0, startPoint);
-    //     lineRenderer.SetPosition(1, endPoint);
-
-    //     yield return new WaitForSeconds(0.05f);
-        
-    //     Destroy(lineRenderer);
-    // }
     #endregion
 }

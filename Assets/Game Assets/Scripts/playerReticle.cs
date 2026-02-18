@@ -150,7 +150,7 @@ public class playerReticle : MonoBehaviour {
 
         transformData.position = new Vector3(aimCoordinate.x, aimCoordinate.y, 0); // Directly set value
         // transformData.position = Vector3.MoveTowards(transformData.position, hit.point, aimSpeed * time.deltaTime);
-        Debug.Log($"Reticle coordinates: {aimCoordinate}");
+        //Debug.Log($"Reticle coordinates: {aimCoordinate}");
 
 
         // Cast ray from reticle
@@ -183,6 +183,11 @@ public class playerReticle : MonoBehaviour {
         } else {
             Debug.LogError("Raycast failed: Ensure map geometry is encased in a box so raycasts can still hit objects.");
         }
+
+//WASD + JUMP using Space
+
+
+
     }
 
 

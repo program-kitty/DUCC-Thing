@@ -77,22 +77,21 @@ public class movement : MonoBehaviour
         Vector2 walkInput = walkAction.ReadValue<Vector2>(); //2 coords on movement
         
         //the 0f here would mess up a velocity/physics-based motion, so have to use translate instead
-        Vector3 playerMovement = new Vector3(walkInput.x * speed, 0f, walkInput.y * speed);
+        Vector3 playerMovement = new Vector3(walkInput.x * speed, 0f, walkInput.y * speed); //rb.linearVelocity.y doesn't work when jumping and moving at same time
 
-        playerMovement = Vector3.ClampMagnitude(playerMovement, speed);        
+        playerMovement = Vector3.ClampMagnitude(playerMovement, speed); 
+        playerMovement.y = rb.linearVelocity.y; //if you add before clamp, then x/y coords mess up jump
 
-        //stable movement speed + world movement 
-        playerMovement *= Time.deltaTime;  
+        //stable movement speed + world movement -- not needed for velocity-based movement
+        //playerMovement *= Time.deltaTime;  
         playerMovement = transform.TransformDirection(playerMovement); 
-        
-        //Thing to look out for-- runs into trouble when colliding with other objects, gets stuck if jumping and colliding with object
-        //find a way to keep player from trying to walk 'into' objects,
-                
-        transform.Translate(playerMovement, Space.World); //used transform.translate because impulse force would not work otherwise!
+                        
+        //transform.Translate(playerMovement, Space.World); //used transform.translate because impulse force would not work otherwise!
         //Debugging Notes: 
             //rb.MovePosition(playerMovement); //same with rb position; even with interpolation and kinematics on, ends up dropping block halfway through ground, cannot move/jump is severely limited
             //rb.AddForce(playerMovement, ForceMode.VelocityChange); //has trouble with 'friction' - can't move unless in air
-        //rb.linearVelocity = playerMovement; //X/Z works when you comment out deltaTime; 0f y velocity impedes jump
+        rb.linearVelocity = playerMovement; //X/Z works when you comment out deltaTime; 0f y velocity impedes jump
+        //rb.AddForce(playerMovement, ForceMode.Impulse); 
        
         //maybe a sphere raycast to see what's nearby? Collision detection? 
         //Options: Sphere raycast detecting when to limit x/z axis movement in a certain direction; collision pushing back

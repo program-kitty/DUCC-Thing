@@ -17,7 +17,10 @@ public class movement : MonoBehaviour
     bool jumpNow = false; 
     public Vector3 playerMovement; //want to use as a public variable for camera movements
     public Vector3 finalMovements; 
-
+    //Three Variables needed for Health and Money!! 
+    int health = 3; 
+    int maxHealth = 3;
+    int money = 0; 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -101,6 +104,39 @@ public class movement : MonoBehaviour
         if (isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+    }
+
+
+    void OnCollisionEnter(Collision collision) //for colliding with money
+    {//couldn't use on money or health itself as it wouldn't allow prefabs to access scripts inside player
+        if (collision.gameObject.tag == "money")
+        {
+            gotMoney();
+            Destroy(collision.gameObject);
+        } else if (collision.gameObject.tag == "loaf") //test these
+        {
+            gotBread(3);
+            Destroy(collision.gameObject);
+        } else if (collision.gameObject.tag == "slice") //test these
+        {
+            gotBread(1);
+            Destroy(collision.gameObject);
+        }
+    }
+
+    public void gotMoney()
+    {
+        money += 1;
+        Debug.Log("Money:" + money);
+    }
+
+    public void gotBread(int x) //test this
+    {
+        health += x; 
+        if (health > maxHealth)
+        {
+            health = maxHealth;
         }
     }
 

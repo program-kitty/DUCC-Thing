@@ -43,7 +43,7 @@ public class playerReticle : MonoBehaviour {
     Vector2 aimCoordinate;  // The on-screen coordinate of the reticle. Should be identical to transformData.position
     Vector3 targetPoint;  // World coordinate the reticle is pointing at
     private Vector2 velocity = Vector2.zero;  // Used by SmoothDamp, do not modify!
-    
+    private float projectileSpeed = 10.0f; //speed for bullets 
 
 
     #region Input Actions
@@ -79,6 +79,8 @@ public class playerReticle : MonoBehaviour {
         var direction = targetPoint - gunMuzzle.position;
         var rotation = Quaternion.LookRotation(direction);
         var projectile = Instantiate(projectilePrefab, gunMuzzle.position, rotation);
+        Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+        projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; //makes sure all bullets are going same speed
         Destroy(projectile, 5f);  // Destroy after 5 seconds
     }
 

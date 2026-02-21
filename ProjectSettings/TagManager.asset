@@ -7,6 +7,9 @@ TagManager:
   - ally
   - enemy
   - Skybox
+  - bullet
+  - crate
+  - money
   layers:
   - Default
   - TransparentFX

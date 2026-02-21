@@ -18,6 +18,7 @@ public class playerReticle : MonoBehaviour {
     [Header("Game Settings")]
     [SerializeField] bool isLocalAim;  // Right-stick aim type
     public float aimSensitivity = 1f;
+    public float globalAimSensitivityDivider = 15f;
     
     [Header("Objects")]
     [SerializeField] Transform gunMuzzle;  // Where to spawn the projectile
@@ -139,8 +140,8 @@ public class playerReticle : MonoBehaviour {
             aimCoordinate.x = aimInput.x * aimSensitivity + transformData.position.x; // Add value to X position
             aimCoordinate.y = aimInput.y * aimSensitivity + transformData.position.y; // Add value to Y position
         } else {
-            newAimCoordinate.x = aimInput.x * Screen.width  / 2 + Screen.width  / 2; // Add value to X position
-            newAimCoordinate.y = aimInput.y * Screen.height / 2 + Screen.height / 2; // Add value to Y position
+            newAimCoordinate.x = (aimInput.x / globalAimSensitivityDivider) * Screen.width  / 2 + Screen.width  / 2; // Add value to X position
+            newAimCoordinate.y = (aimInput.y / globalAimSensitivityDivider) * Screen.height / 2 + Screen.height / 2; // Add value to Y position
             // smoothTime = globalSmoothTime;
             aimCoordinate = Vector2.SmoothDamp(aimCoordinate, newAimCoordinate, ref velocity, globalSmoothTime);
         }
@@ -170,6 +171,7 @@ public class playerReticle : MonoBehaviour {
                     reticleSprite.color = Color.green;
                     break;
                 case "enemy":
+                case "crate":
                     reticleSprite.color = Color.red;
                     break;
                 case "Skybox":

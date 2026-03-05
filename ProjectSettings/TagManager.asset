@@ -10,6 +10,8 @@ TagManager:
   - bullet
   - crate
   - money
+  - world
+  - checkpoint
   layers:
   - Default
   - TransparentFX
@@ -17,7 +19,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - collectibles
   - 
   - 
   - 

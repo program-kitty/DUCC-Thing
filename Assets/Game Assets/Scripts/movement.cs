@@ -4,6 +4,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 
 public class movement : MonoBehaviour
@@ -21,6 +22,8 @@ public class movement : MonoBehaviour
     int health = 3; 
     int maxHealth = 3;
     int money = 0; 
+    public int stage = 0; //stages of checkpoints in game
+    //once dying becomes an option, should use this (affected by checkpoints) to determine spawn location
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -28,6 +31,7 @@ public class movement : MonoBehaviour
         //setting up values using input system - new input system        
         walkAction = InputSystem.actions.FindAction("Move"); //in update - same as aim
         jumpAction = InputSystem.actions.FindAction("Jump"); //enable/disable - toggle
+        DontDestroyOnLoad(this.gameObject); 
     } 
     
     void Start()
@@ -48,8 +52,9 @@ public class movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-//create raycast to detect floor below
-//uses Raycast to detect floor and distance from floor below - if troubleshooting is needed, click this link to see about collision-detecting instead: https://discussions.unity.com/t/detect-collision-from-bottom/12514
+    //create raycast to detect floor below
+    //uses Raycast to detect floor and distance from floor below - if troubleshooting is needed, click this link to see about collision-detecting instead: https://discussions.unity.com/t/detect-collision-from-bottom/12514
+    
     RaycastHit hit; 
     Ray downRay = new Ray(transform.position, -Vector3.up); //looks at below character
 
@@ -125,10 +130,10 @@ public class movement : MonoBehaviour
         }
     }
 
+
     public void gotMoney()
     {
         money += 1;
-        Debug.Log("Money:" + money);
     }
 
     public void gotBread(int x) //test this

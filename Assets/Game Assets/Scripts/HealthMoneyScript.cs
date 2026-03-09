@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -24,6 +25,7 @@ public class HealthMoneyScript : MonoBehaviour
         if (collision.gameObject.tag != "crate" && collision.gameObject.tag != "money")
         {
             collided = true;
+            StartCoroutine(Despawn()); 
         }
     }
 
@@ -44,5 +46,9 @@ public class HealthMoneyScript : MonoBehaviour
         transform.Rotate(0f,0.1f,0f,Space.World); //rotates around world, so stops revolving around istelf if sideways
     }
 
-
+    private IEnumerator Despawn()
+    {
+        yield return new WaitForSeconds(20); //to avoid overcrowding scene if players don't pick up everything
+        Destroy(this.gameObject); 
+    }
 }

@@ -12,11 +12,12 @@ TagManager:
   - money
   - world
   - checkpoint
+  - manager
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
   - collectibles

@@ -8,11 +8,12 @@ public class ShootingEnemyScript : MonoBehaviour
     float counter = 0; 
     float projectileSpeed = 10; 
     float rRange = 8; 
-    float timer = 5f; 
+    public float timer = 3f; 
     float distance; 
     float maxDistance = 10f; 
     Vector3 look; 
     bool startShooting = false; 
+    public int health = 1; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -56,5 +57,16 @@ public class ShootingEnemyScript : MonoBehaviour
         Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
         projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; 
         Destroy(projectile,5f); //Destroy after 5 seconds
+    }
+
+
+    public void gotShot()
+    {
+        health -= 1; 
+        if (health <= 0)
+        {
+            //probably use an ienumerator
+            Destroy(this.gameObject);
+        }
     }
 }

@@ -12,6 +12,7 @@ public class ScrappyScript : MonoBehaviour
     bool canMove = false; 
     float slowDownSpeed = 5f; 
     float maxDistance = 10f;
+    public int health = 3; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,7 +30,7 @@ public class ScrappyScript : MonoBehaviour
             canMove = true; //so they start only after a certain distance
         }
 
-        if (canMove && distance > 2)
+        if (canMove && distance > 2 && health > 0)
         {
             rb.linearVelocity = (movement * speed);
         } else
@@ -41,11 +42,24 @@ public class ScrappyScript : MonoBehaviour
         }
 
         Vector3 look = new Vector3(playerObject.transform.position.x, this.transform.position.y, playerObject.transform.position.z);
-        transform.LookAt(look);
+        
+        if (health > 0 && canMove)
+        {
+            transform.LookAt(look);
+        }
 
         movement = new Vector3(transform.forward.x, 0, transform.forward.z); 
         movement = Vector3.ClampMagnitude(movement, speed); 
         movement.y = rb.linearVelocity.y;
 
+    }
+
+    public void gotShot()
+    {
+        health -= 1; 
+        if (health <= 0)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

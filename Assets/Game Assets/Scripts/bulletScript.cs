@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.MPE;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -26,21 +28,38 @@ public class bulletScript : MonoBehaviour
             whoShot = hit.gameObject;
             firstCollide = false; //to know who shot the bullet! 
         }
-
 //this part needs to be cleaned up :(
         if (hit.tag == "enemy" && !(hit.tag == shootingName)) //if hits an enemy (and an enemy didn't shoot)
         {
             //decrease enemy health
-            Debug.Log("Enemy Hit!");
+            //get script component, maybe name same type of function in both
+            ShootingEnemyScript shootingScript = hit.gameObject.GetComponent<ShootingEnemyScript>();
+            ScrappyScript scrappyScript = hit.gameObject.GetComponent<ScrappyScript>(); 
+            if (shootingScript != null)
+            {
+                shootingScript.gotShot(); 
+            } else if (scrappyScript!= null)
+            {
+                scrappyScript.gotShot(); 
+            } //if you get more unique characters - make a variable for their script, check if null or not, same public void
+            //is there a more efficient way to do this? unable to make a variable for script without mentioning specific script
+
         } 
         if (hit.tag == "enemy" && !(hit.gameObject == whoShot)) //
         {
             Destroy(this.gameObject); //if enemy hits other enemy- should we allow friendly fire?
         }
-        if (hit.tag == "player" && !(hit.tag == shootingName))
+   
+        if (hit.tag == "Player" && !(hit.tag == shootingName))
         {
             //decrease player health
-            Debug.Log("Player hit!");
+            movement playerScript = hit.gameObject.GetComponent<movement>();
+            if (playerScript == null)
+            {
+                playerScript = hit.transform.parent.GetComponent<movement>(); //when it hits cylinder, gives error - this fixes that
+            }
+            playerScript.gotBread(-1); 
+            
         }
 
         if (hit.tag == "bullet")

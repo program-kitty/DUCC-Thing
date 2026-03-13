@@ -29,6 +29,7 @@ public class Checkpoint : MonoBehaviour
 
     public void Checked()
     {
+        Debug.Log("Script Activated");
         if (firstTimeHit)
         {
             if (gameManagerScript.stage < checkPointNumber)

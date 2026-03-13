@@ -5,6 +5,11 @@ public class cameraMovements : MonoBehaviour
     [SerializeField] GameObject player; 
     float speed = 2.0f; 
 
+    float targetX; 
+    float targetY; 
+    float targetZ; 
+    public bool endGame = false; 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -18,6 +23,19 @@ public class cameraMovements : MonoBehaviour
 //ask about reticle
 
         //mathfLerps to make it a little more graceful
-        transform.position = new Vector3(Mathf.Lerp(transform.position.x, player.transform.position.x, Time.deltaTime * speed), 2.78f, Mathf.Lerp(transform.position.z, player.transform.position.z - 10f, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
+
+        if (endGame)
+        {
+            targetZ = player.transform.position.z - 3f;
+            targetY = 0.4f; 
+  
+        } else
+        {
+            targetY = 2.78f;
+            targetZ = player.transform.position.z - 10f; //typical setup
+        }
+        targetX = player.transform.position.x;
+
+        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), targetY, Mathf.Lerp(transform.position.z, targetZ, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
     }
 }

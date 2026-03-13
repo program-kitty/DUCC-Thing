@@ -37,6 +37,7 @@ public class ScrappyScript : MonoBehaviour
         {
             movement.x = Mathf.Lerp(rb.linearVelocity.x, 0, Time.deltaTime * slowDownSpeed);
             movement.z = Mathf.Lerp(rb.linearVelocity.z, 0, Time.deltaTime * slowDownSpeed); 
+            movement.y = rb.linearVelocity.y;
             rb.linearVelocity = (movement);
             //add damage/'scrapping' ability here! 
         }

@@ -1,0 +1,36 @@
+using UnityEditor.Callbacks;
+using UnityEngine;
+
+public class SpikeScript : MonoBehaviour
+{
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        GameObject hit = collision.gameObject; 
+        if (hit.tag =="Player")
+        {
+            movement movement = hit.GetComponent<movement>(); 
+            movement.gotBread(-1);
+        }
+
+        // Rigidbody rb = hit.GetComponent<Rigidbody>();  //add this in once you figure out how to send player backwards when interacting with spike
+        // if (rb != null) {
+        //     Vector3 direction = rb.transform.forward;
+        //     Debug.Log(rb.linearVelocity); 
+        //     direction *= -40f; 
+        //     direction.y = 1f;
+        //     rb.AddForce(direction * 3f, ForceMode.Impulse);
+        // }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}

@@ -11,7 +11,7 @@ public class bulletScript : MonoBehaviour
     bool firstCollide = true; 
     Rigidbody rb; 
     string shootingName;
-    GameObject whoShot;
+    public GameObject whoShot;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -43,7 +43,6 @@ public class bulletScript : MonoBehaviour
                 scrappyScript.gotShot(); 
             } //if you get more unique characters - make a variable for their script, check if null or not, same public void
             //is there a more efficient way to do this? unable to make a variable for script without mentioning specific script
-
         } 
         if (hit.tag == "enemy" && !(hit.gameObject == whoShot)) //
         {
@@ -58,8 +57,7 @@ public class bulletScript : MonoBehaviour
             {
                 playerScript = hit.transform.parent.GetComponent<movement>(); //when it hits cylinder, gives error - this fixes that
             }
-            playerScript.gotBread(-1); 
-            
+            playerScript.gotBread(-1);    
         }
 
         if (hit.tag == "bullet")
@@ -70,10 +68,13 @@ public class bulletScript : MonoBehaviour
         {
             BreakCrateScript hitScript = hit.GetComponent<BreakCrateScript>();
             hitScript.crateHit(); 
-        } else if (hit.tag == "checkpoint" && !(shootingName == "enemy")) //if player hits a checkpoint
+        }
+        if (hit.tag == "checkpoint" && !(shootingName == "enemy")) //if player hits a checkpoint
         {
             Checkpoint checkpointScript = hit.GetComponent<Checkpoint>();
-            checkpointScript.Checked(); //checkpoint ups stage counter on movememnt (unable to do that here)
+//            Debug.Log(hit.GetComponent<Checkpoint>());  -- even for 'bugged' checkpoints it still finds the script
+            checkpointScript.Checked(); //checkpoint ups stage counter on movememnt (unable to do that here)                
+            
         }
         if (hit.tag != shootingName && hit.tag != "money" && hit.tag != "loaf" && hit.tag != "slice") 
         {

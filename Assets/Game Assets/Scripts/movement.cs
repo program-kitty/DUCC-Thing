@@ -29,6 +29,8 @@ public class movement : MonoBehaviour
     GameObject manager;
     GameManagerScript managerScript; 
     [SerializeField] Camera cam; 
+
+    GameObject firstBullet; 
     //once dying becomes an option, should use this (affected by checkpoints) to determine spawn location
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -41,13 +43,13 @@ public class movement : MonoBehaviour
         jumpAction = InputSystem.actions.FindAction("Jump"); //enable/disable - toggle
         //DontDestroyOnLoad(this.gameObject); 
         health = 3; 
+        rb = GetComponent<Rigidbody>();
          
     } 
 
     void Start()
     {
         stage = managerScript.stage; 
-        rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true; //prevents character from falling over when moving (was added when using velocity as motion, may not be required anymore but is good to have just in case)
         rb.transform.position = managerScript.spawnPoint; 
         cam.transform.position = new Vector3(managerScript.spawnPoint.x, 2.78f, managerScript.spawnPoint.z- 10f); 
@@ -113,6 +115,24 @@ public class movement : MonoBehaviour
         {
             isGrounded = false;
         }
+
+        for (int i=0; i<groundCollisions.Length; i++) //for everything in collision, checking if any of those we're 'standing' on is a bullet
+        {
+            if (groundCollisions[i].gameObject.tag == "bullet")
+            {
+                if (groundCollisions[i].gameObject.GetComponent<bulletScript>().whoShot.gameObject.tag != this.gameObject.tag) //if its not your own bullets (bullet script has that info)
+                {
+                    if (firstBullet == null || firstBullet != groundCollisions[i].gameObject) //so you don't get propelled many times from one collision
+                    {
+                        rb.AddForce(Vector3.up*10f, ForceMode.Impulse);
+                        isGrounded = false;//same stuff from jump function below (added more force because otherwise jumps were weak)
+                        firstBullet = groundCollisions[i].gameObject; //makes sure only happens once per bullet
+                    } 
+                }
+            }
+        }
+
+
         //walk -- using this to immediately get joystick data, not wait for change
         Vector2 walkInput = walkAction.ReadValue<Vector2>(); //2 coords on movement
         
@@ -135,6 +155,12 @@ public class movement : MonoBehaviour
        
         //maybe a sphere raycast to see what's nearby? Collision detection? 
         //Options: Sphere raycast detecting when to limit x/z axis movement in a certain direction; collision pushing back
+
+        //this.transform.rotation = Quaternion.LookRotation(playerMovement,Vector3upwards = Vector3.up);
+
+//        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(playerMovement), Time.deltaTime * 40f);
+//alien.transform.rotation = Quaternion.Slerp (alien.transform.rotation, Quaternion.LookRotation (movementDirection), Time.deltaTime * 40f);
+        
     }
 
     void OnJump(InputAction.CallbackContext context) {
@@ -217,7 +243,7 @@ public class movement : MonoBehaviour
         }
     }
 
-    private IEnumerator Death()
+    public IEnumerator Death()
     {
         yield return new WaitForSeconds(0);
         SceneManager.LoadScene(1);

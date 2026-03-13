@@ -1,10 +1,17 @@
 using System;
+using System.Collections;
+using System.Data.Common;
+using NUnit.Framework.Constraints;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class ScrappyScript : MonoBehaviour
 {
     [SerializeField] GameObject playerObject; 
+    [SerializeField] movement playerScript; 
     Rigidbody rb;
     float speed = 3f;
     Vector3 movement; 
@@ -13,6 +20,7 @@ public class ScrappyScript : MonoBehaviour
     float slowDownSpeed = 5f; 
     float maxDistance = 10f;
     public int health = 3; 
+    float counter = 1; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,7 +40,12 @@ public class ScrappyScript : MonoBehaviour
 
         if (canMove && distance > 2 && health > 0)
         {
-            rb.linearVelocity = (movement * speed);
+            movement = new Vector3(transform.forward.x, 0, transform.forward.z);
+            movement *= speed;  
+            movement = Vector3.ClampMagnitude(movement, speed); 
+            movement.y = rb.linearVelocity.y;
+
+            rb.linearVelocity = movement; 
         } else
         {
             movement.x = Mathf.Lerp(rb.linearVelocity.x, 0, Time.deltaTime * slowDownSpeed);
@@ -49,9 +62,30 @@ public class ScrappyScript : MonoBehaviour
             transform.LookAt(look);
         }
 
-        movement = new Vector3(transform.forward.x, 0, transform.forward.z); 
-        movement = Vector3.ClampMagnitude(movement, speed); 
-        movement.y = rb.linearVelocity.y;
+        RaycastHit hit; 
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 2.5f)) //2.5 is maxdistance
+        {
+            if (hit.transform.gameObject != null)
+            {
+                if (hit.transform.gameObject.tag == "Player")
+                {
+                    counter += Time.deltaTime; 
+                    if (counter >= 2)
+                    {
+                        playerScript.gotBread(-1);
+                        Debug.Log("Punch!");
+                        counter = 0; 
+                    }
+                } else
+                {
+                    counter = 2;
+                }
+            } else
+            {
+                counter = 2; 
+            }
+        }
 
     }
 

@@ -31,11 +31,11 @@ public class cameraMovements : MonoBehaviour
   
         } else
         {
-            targetY = 2.78f;
+            targetY = 2.78f + player.transform.position.y;
             targetZ = player.transform.position.z - 10f; //typical setup
         }
         targetX = player.transform.position.x;
 
-        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), targetY, Mathf.Lerp(transform.position.z, targetZ, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
+        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), Mathf.Lerp(transform.position.y, targetY, Time.deltaTime * speed), Mathf.Lerp(transform.position.z, targetZ, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
     }
 }

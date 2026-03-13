@@ -47,8 +47,7 @@ public class ShootingEnemyScript : MonoBehaviour
     }
     void Shoot()
     {
-        //try having randomized angles on shooting
-        transform.LookAt(player.transform.position);//so that it can aim upwards/downwards if needed      
+        //try having randomized angles on shooting     
         Vector3 randomRotation = new Vector3 (Random.Range(-1,1), Random.Range(-rRange,rRange), 0);
         transform.Rotate(randomRotation); //x is vertical, y is horizontal, z is sideways rotation 
 

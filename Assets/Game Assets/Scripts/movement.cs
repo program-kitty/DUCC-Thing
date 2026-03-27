@@ -49,6 +49,7 @@ public class movement : MonoBehaviour
 
     void Start()
     {
+        Debug.Log(health);
         stage = managerScript.stage; 
         rb.freezeRotation = true; //prevents character from falling over when moving (was added when using velocity as motion, may not be required anymore but is good to have just in case)
         rb.transform.position = managerScript.spawnPoint; 

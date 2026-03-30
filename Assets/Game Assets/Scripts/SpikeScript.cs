@@ -15,17 +15,16 @@ public class SpikeScript : MonoBehaviour
         if (hit.tag =="Player")
         {
             movement movement = hit.GetComponent<movement>(); 
+            StartCoroutine(movement.spikeHit());
             movement.gotBread(-1);
+            Rigidbody rb = hit.GetComponent<Rigidbody>();  //add this in once you figure out how to send player backwards when interacting with spike
+            if (rb != null) {
+                Vector3 direction = rb.transform.forward;
+                direction *= -1f; 
+                direction.y = 1f;
+                rb.AddForce(direction * 3f, ForceMode.Impulse);
+            }
         }
-
-        // Rigidbody rb = hit.GetComponent<Rigidbody>();  //add this in once you figure out how to send player backwards when interacting with spike
-        // if (rb != null) {
-        //     Vector3 direction = rb.transform.forward;
-        //     Debug.Log(rb.linearVelocity); 
-        //     direction *= -40f; 
-        //     direction.y = 1f;
-        //     rb.AddForce(direction * 3f, ForceMode.Impulse);
-        // }
     }
 
     // Update is called once per frame

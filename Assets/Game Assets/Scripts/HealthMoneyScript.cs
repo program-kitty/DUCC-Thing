@@ -12,21 +12,24 @@ public class HealthMoneyScript : MonoBehaviour
     private float counter = 0f;
     private float startHeight = 0.5f; 
     bool collided = false; 
-    
+
+public     float xRotation = 0f;     
     void Start()
     {
         counter += Random.Range(0f,10f); //so the bobs are randomized
         rb = gameObject.GetComponent<Rigidbody>();
+
     }
 
     void OnCollisionEnter(Collision collision)
     { //once it hits the floor, will start doing 'bob' animation
     //does not actually test floor, just any collision - may need debugging when testing later
-        if (collision.gameObject.tag != "crate" && collision.gameObject.tag != "money")
+        if (collision.gameObject.tag != "crate" && collision.gameObject.tag != "money" && collision.gameObject.tag != "enemy")
         {
             collided = true;
+            
             StartCoroutine(Despawn()); 
-        }
+        } 
     }
 
     // Update is called once per frame
@@ -37,13 +40,17 @@ public class HealthMoneyScript : MonoBehaviour
             rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
             transform.position = new Vector3(transform.position.x, (Mathf.Sin(counter)*bobHeight)+startHeight, transform.position.z); 
         }
-        if (this.transform.rotation.eulerAngles.x != 0 || this.transform.rotation.eulerAngles.z != 0)
-        {
-            transform.rotation = Quaternion.Euler(0,0,0); //had a habit of turning around in air when affected by physics; prevents rotations
-        }
+
+        if (this.transform.rotation.eulerAngles.x != xRotation || this.transform.rotation.eulerAngles.z != 0f)
+            {
+                transform.rotation = Quaternion.Euler(xRotation,0,0); //had a habit of turning around in air when affected by physics; prevents rotations
+            } 
+        
 
         counter+= 0.005f; //for slower and nicer animation of bobbing movement
-        transform.Rotate(0f,0.1f,0f,Space.World); //rotates around world, so stops revolving around istelf if sideways
+
+        transform.Rotate(0f, 0.1f, 0f, Space.World); //rotates around world, so stops revolving around istelf if sideways
+
     }
 
     private IEnumerator Despawn()

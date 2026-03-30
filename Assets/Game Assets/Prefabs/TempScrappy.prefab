@@ -154,3 +154,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   playerObject: {fileID: 0}
+  playerScript: {fileID: 0}
+  health: 3

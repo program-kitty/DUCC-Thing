@@ -11,6 +11,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System;
 using System.Collections;
+using JetBrains.Annotations;
 
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(RectTransform))]
@@ -42,10 +43,9 @@ public class playerReticle : MonoBehaviour {
     [SerializeField] float localSmoothTime = 0.1f;
     [SerializeField] float globalSmoothTime = 0.3f;
     Vector2 aimCoordinate;  // The on-screen coordinate of the reticle. Should be identical to transformData.position
-    Vector3 targetPoint;  // World coordinate the reticle is pointing at
+    public Vector3 targetPoint;  // World coordinate the reticle is pointing at
     private Vector2 velocity = Vector2.zero;  // Used by SmoothDamp, do not modify!
     private float projectileSpeed = 10.0f; //speed for bullets 
-
 
     #region Input Actions
 

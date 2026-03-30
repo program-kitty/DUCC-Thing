@@ -72,12 +72,16 @@ public class movement : MonoBehaviour
     {
       
     Collider[] groundCollisions = Physics.OverlapBox(new Vector3(transform.position.x,transform.position.y - transform.localScale.y/2, transform.position.z), new Vector3(transform.localScale.x/2-0.05f, 0.18f, transform.localScale.z/2-0.05f), transform.rotation);
-    if (groundCollisions.Length > 2) //always contacting two parts: cylinder and player objects
+    if (groundCollisions.Length >= 2) //always contacting two parts: cylinder and player objects //UPDATE: now >= as bazooka doesn't have collider
         {
             isGrounded = true; //if more than that, then must be contacting floor
         } else 
         {
             isGrounded = false;
+            for (int i=0; i<groundCollisions.Length; i++) //for everything in collision, checking if any of those we're 'standing' on is a bullet
+            {
+                Debug.Log(groundCollisions[i]);
+            }
         }
 
         for (int i=0; i<groundCollisions.Length; i++) //for everything in collision, checking if any of those we're 'standing' on is a bullet
@@ -138,7 +142,7 @@ Sideways --> 45 degrees add/subtract
 
 */
 
-
+//*____________________________________________________________________________ROTATION AND MOVEMENT
 float newRotationY = 0; 
 
     if (walkInput.x < 0f) //-X
@@ -194,8 +198,6 @@ float newRotationY = 0;
 
         if (canMove)
         {
-            
-        
         if (walkInput.x == walkInput.y && walkInput.y == 0)
         {
             rb.linearVelocity = new Vector3(0,rb.linearVelocity.y,0);
@@ -215,7 +217,6 @@ float newRotationY = 0;
             rb.linearVelocity = new Vector3(changeX, rb.linearVelocity.y, changeZ);
         }
 
-
        
         //maybe a sphere raycast to see what's nearby? Collision detection? 
         //Options: Sphere raycast detecting when to limit x/z axis movement in a certain direction; collision pushing back
@@ -230,6 +231,7 @@ float newRotationY = 0;
     void OnJump(InputAction.CallbackContext context) {
         if (isGrounded)
         {
+             Debug.Log("jump!");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             isGrounded = false; 
         }

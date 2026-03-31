@@ -32,6 +32,7 @@ public class movement : MonoBehaviour
     GameObject manager;
     GameManagerScript managerScript; 
     [SerializeField] Camera cam; 
+    float transitionRotation;
 
     GameObject firstBullet; 
     //once dying becomes an option, should use this (affected by checkpoints) to determine spawn location
@@ -149,15 +150,15 @@ float newRotationY = 0;
         {
             if (walkInput.y == 0) //-X, 0Y 
             {
-                newRotationY = -90f; //LEFT
+                newRotationY = 270; //LEFT
                 rotationStage = 6;
             } else if (walkInput.y >0 ) //-X, +Y
             {
-                newRotationY = -45f; //LEFT-FORWARD
+                newRotationY = 315; //LEFT-FORWARD
                 rotationStage = 7;
             } else //-X, -Y
             {
-                newRotationY = -135f; //LEFT-BACKWARD
+                newRotationY = 225; //LEFT-BACKWARD
                 rotationStage = 5;
             }
         } else if (walkInput.x > 0) //+X
@@ -184,17 +185,31 @@ float newRotationY = 0;
                 rotationStage = 4;
             } else if (walkInput.y > 0) //0X, +Y
             {
-                newRotationY = 0f; //FOREWARDS
+                if (transform.localRotation.eulerAngles.y > 180)
+                {
+                    newRotationY = 360; 
+                } else
+                {
+                    newRotationY = 0f; //FOREWARDS
+                }
                 rotationStage = 0; 
             } else //0X, 0Y
             {
-                newRotationY = rotationStage * 45; //rotation stage used to figure out last position
+                newRotationY = transform.localRotation.eulerAngles.y; //rotation stage used to figure out last position
                 //Figure out how to leave them staying in their current rotation; 
             }
+        }   
+        
+        if (Mathf.Abs(transform.localRotation.eulerAngles.y - newRotationY) >= 180)
+        {
+            
+        }
+        {
+            
         }
 
-        transform.rotation = Quaternion.Euler(0, newRotationY, 0);
-
+        transitionRotation = Mathf.Lerp(transform.localRotation.eulerAngles.y, newRotationY, Time.deltaTime * 10);
+        transform.rotation = Quaternion.Euler(0,transitionRotation, 0);
 
         if (canMove)
         {

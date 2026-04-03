@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Data.Common;
+using System.Runtime.Serialization.Formatters;
 using NUnit.Framework.Constraints;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -17,6 +18,7 @@ public class movement : MonoBehaviour
     InputAction jumpAction; 
     float speed = 5.0f; 
     bool isGrounded = true; 
+    bool isDying = false; 
     float jumpForce = 5f; 
     bool jumpNow = false; 
     public Vector3 playerMovement; //want to use as a public variable for camera movements
@@ -26,6 +28,8 @@ public class movement : MonoBehaviour
     int maxHealth = 3;
     int money = 0; 
     public int stage = 0; 
+    int rotationStage; 
+    public bool canMove = true;
     GameObject manager;
     GameManagerScript managerScript; 
     [SerializeField] Camera cam; 
@@ -67,6 +71,11 @@ public class movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isDying)
+        {
+            transform.Rotate(0,0.5f,0);
+            transform.localScale *= 0.999f;
+        }
         //Debug.Log(isGrounded);
     //create raycast to detect floor below
     //uses Raycast to detect floor and distance from floor below - if troubleshooting is needed, click this link to see about collision-detecting instead: https://discussions.unity.com/t/detect-collision-from-bottom/12514
@@ -134,23 +143,24 @@ public class movement : MonoBehaviour
 
 
         //walk -- using this to immediately get joystick data, not wait for change
-        Vector2 walkInput = walkAction.ReadValue<Vector2>(); //2 coords on movement
+//         Vector2 walkInput = walkAction.ReadValue<Vector2>(); //2 coords on movement
         
-        //the 0f here would mess up a velocity/physics-based motion, so have to use translate instead
-        Vector3 playerMovement = new Vector3(walkInput.x * speed, 0f, walkInput.y * speed); //rb.linearVelocity.y doesn't work when jumping and moving at same time
+        //this section has been removed because walking is now based on rotation/forward motion, not just force applied to a side
+        // //the 0f here would mess up a velocity/physics-based motion, so have to use translate instead
+         //Vector3 playerMovement = new Vector3(walkInput.x * speed, 0f, walkInput.y * speed); //rb.linearVelocity.y doesn't work when jumping and moving at same time
 
-        playerMovement = Vector3.ClampMagnitude(playerMovement, speed); 
-        playerMovement.y = rb.linearVelocity.y; //if you add before clamp, then x/y coords mess up jump
+         //playerMovement = Vector3.ClampMagnitude(playerMovement, speed); 
+         //playerMovement.y = rb.linearVelocity.y; //if you add before clamp, then x/y coords mess up jump
 
-        //stable movement speed + world movement -- not needed for velocity-based movement
-        //playerMovement *= Time.deltaTime;  
-        playerMovement = transform.TransformDirection(playerMovement); 
+        // //stable movement speed + world movement -- not needed for velocity-based movement
+        // //playerMovement *= Time.deltaTime;  
+        // playerMovement = transform.TransformDirection(playerMovement); 
                         
         //transform.Translate(playerMovement, Space.World); //used transform.translate because impulse force would not work otherwise!
         //Debugging Notes: 
             //rb.MovePosition(playerMovement); //same with rb position; even with interpolation and kinematics on, ends up dropping block halfway through ground, cannot move/jump is severely limited
             //rb.AddForce(playerMovement, ForceMode.VelocityChange); //has trouble with 'friction' - can't move unless in air
-        rb.linearVelocity = playerMovement; //X/Z works when you comment out deltaTime; 0f y velocity impedes jump
+        //rb.linearVelocity = playerMovement; //X/Z works when you comment out deltaTime; 0f y velocity impedes jump
         //rb.AddForce(playerMovement, ForceMode.Impulse); 
        
         //maybe a sphere raycast to see what's nearby? Collision detection? 
@@ -160,7 +170,105 @@ public class movement : MonoBehaviour
 
 //        this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Quaternion.LookRotation(playerMovement), Time.deltaTime * 40f);
 //alien.transform.rotation = Quaternion.Slerp (alien.transform.rotation, Quaternion.LookRotation (movementDirection), Time.deltaTime * 40f);
+        // the 0.01f is your input deadzone.
+
+        Vector2 walkInput = walkAction.ReadValue<Vector2>(); //2 coords on movement
         
+    if (walkInput.sqrMagnitude > 0.01) //model rotation
+        {
+            Vector3 walkingCoord = new Vector3(walkInput.x, 0, walkInput.y);
+            Quaternion targetRotation = Quaternion.LookRotation(walkingCoord); //look at input
+            float rotationSpeed = 720f; // degrees per second
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime); //rotates slowly rather than immediate movement
+        }
+
+        // float newRotationY = 0;
+//    if (walkInput.x < 0f) //-X
+//        {
+//            if (walkInput.y == 0) //-X, 0Y
+//            {
+//                newRotationY = 270; //LEFT
+//                rotationStage = 6;
+//            } else if (walkInput.y >0 ) //-X, +Y
+//            {
+//                newRotationY = 315; //LEFT-FORWARD
+//                rotationStage = 7;
+//            } else //-X, -Y
+//            {
+//                newRotationY = 225; //LEFT-BACKWARD
+//                rotationStage = 5;
+//            }
+//        } else if (walkInput.x > 0) //+X
+//        {
+//            if (walkInput.y == 0) //+X, 0Y
+//            {
+//                newRotationY = 90f; //RIGHT
+//                rotationStage = 2;
+//            } else if (walkInput.y > 0) //+X, +Y
+//            {
+//                newRotationY = 45f; //RIGHT-FORWARD
+//                rotationStage = 1;
+//            } else //+X, -Y
+//            {
+//                newRotationY = 135f; //RIGHT-BACKWARD
+//                rotationStage = 3;
+//            }
+          
+//        } else //0X
+//        {
+//            if (walkInput.y < 0) //0X, -Y
+//            {
+//                newRotationY = 180f; //BACKWARDS
+//                rotationStage = 4;
+//            } else if (walkInput.y > 0) //0X, +Y
+//            {
+//                if (transform.localRotation.eulerAngles.y > 180)
+//                {
+//                    newRotationY = 360;
+//                } else
+//                {
+//                    newRotationY = 0f; //FOREWARDS
+//                }
+//                rotationStage = 0;
+//            } else //0X, 0Y
+//            {
+//                newRotationY = transform.localRotation.eulerAngles.y; //rotation stage used to figure out last position
+//                //Figure out how to leave them staying in their current rotation;
+//            }
+//        }  
+      
+//        if (Mathf.Abs(transform.localRotation.eulerAngles.y - newRotationY) >= 180)
+//        {
+          
+//        }
+
+       //transitionRotation = Mathf.Lerp(transform.localRotation.eulerAngles.y, newRotationY, Time.deltaTime * 10);
+       //transform.rotation = Quaternion.Euler(0,newRotationY, 0);
+
+//____________________________________________________________________________________________________________________________________________________________ MOVEMENT
+       if (canMove)
+       {
+            if (walkInput.x == walkInput.y && walkInput.y == 0)
+            {
+                rb.linearVelocity = new Vector3(0,rb.linearVelocity.y,0);
+            } else
+            {
+                Vector3 forward = new Vector3(transform.forward.x * speed, 0, transform.forward.z * speed);
+                forward = Vector3.ClampMagnitude(forward, speed);
+                forward = new Vector3(forward.x, rb.linearVelocity.y, forward.z);
+
+
+                rb.linearVelocity = forward;
+            }
+       } else
+       {
+           float changeX = Mathf.Lerp(rb.linearVelocity.x, 0, Time.deltaTime);
+           float changeZ = Mathf.Lerp(rb.linearVelocity.z, 0, Time.deltaTime);
+
+           rb.linearVelocity = new Vector3(changeX, rb.linearVelocity.y, changeZ);
+       }
+
     }
 
     void OnJump(InputAction.CallbackContext context) {
@@ -224,7 +332,12 @@ public class movement : MonoBehaviour
     //     // } 
     // }
 
-
+    public IEnumerator spikeHit()
+    {
+        canMove = false; 
+        yield return new WaitForSeconds(1.5f);
+        canMove = true; 
+    }
     public void gotMoney()
     {
         money += 1;
@@ -245,7 +358,9 @@ public class movement : MonoBehaviour
 
     public IEnumerator Death()
     {
-        yield return new WaitForSeconds(0);
+        canMove = false; 
+        isDying = true;
+        yield return new WaitForSeconds(2);
         SceneManager.LoadScene(1);
         testCounter += 1;
     }

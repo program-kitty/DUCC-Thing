@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2571610202954206591}
   - component: {fileID: 8884087316314471784}
   - component: {fileID: 28963456091267994}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: tempShootingEnemy
   m_TagString: enemy
   m_Icon: {fileID: 0}
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 840112944041940753}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.13, y: 0.61, z: 12.96}
+  m_LocalPosition: {x: -7.463, y: 1.512, z: 35.74}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -155,3 +155,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   player: {fileID: 0}
   projectilePrefab: {fileID: 4493867135238894444, guid: 10d6da8b73f1243a9a156875f4396caf, type: 3}
+  timer: 3
+  health: 1

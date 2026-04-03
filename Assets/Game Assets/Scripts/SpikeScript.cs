@@ -29,7 +29,13 @@ public class SpikeScript : MonoBehaviour
                     rb.AddForce(direction * 3f, ForceMode.Impulse);
                  }
             }
-       }
+       } else if (hit.tag == "enemy")
+        {
+            Rigidbody rb = hit.GetComponent<Rigidbody>(); 
+            Vector3 pushDirection = Vector3.forward; 
+            pushDirection = new Vector3(pushDirection.x, 1f, pushDirection.z);
+            rb.AddForce(pushDirection * 2f, ForceMode.Impulse);
+        }
    }
 
 

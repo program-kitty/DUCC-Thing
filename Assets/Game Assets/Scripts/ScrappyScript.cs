@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Data.Common;
 using NUnit.Framework.Constraints;
+using TMPro;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -20,6 +21,7 @@ public class ScrappyScript : MonoBehaviour
     float slowDownSpeed = 5f; 
     float maxDistance = 10f;
     public int health = 3; 
+    bool canPunch = false; 
     float counter = 1; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -63,31 +65,63 @@ public class ScrappyScript : MonoBehaviour
         }
 
         RaycastHit hit; 
-
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 2.5f)) //2.5 is maxdistance
+//Punch Mechanic
+        if (Physics.Raycast(transform.position, transform.forward, out hit, 2.5f)) //2.5 is maxdistance 
         {
+
             if (hit.transform.gameObject != null)
             {
-                if (hit.transform.gameObject.tag == "Player")
+                string tag = hit.transform.gameObject.tag; 
+                if (tag == "Player")
                 {
                     counter += Time.deltaTime; 
                     if (counter >= 2)
                     {
-                        playerScript.gotBread(-1);
-                        Debug.Log("Punch!");
-                        counter = 0; 
-                    }
-                } else
+                        StartCoroutine(punch());
+                        if (canPunch)
+                        {
+                            playerScript.gotBread(-1);
+                            Debug.Log("Punch!");
+                            counter = 0f; 
+                            canPunch = false; 
+                        }
+                    } 
+                } else if (tag == "crate")
                 {
-                    counter = 2;
+                    counter += Time.deltaTime; 
+                    if (counter >= 2f)
+                    {
+                        BreakCrateScript crate = hit.transform.gameObject.GetComponent<BreakCrateScript>(); 
+                        if (canPunch)
+                        {
+                            counter = 0f;
+                            crate.crateHit();
+                            canPunch = false; 
+                        }
+                    }
+                } else 
+                {
+                    counter = 0.1f;
                 }
             } else
             {
-                counter = 2; 
+                counter = 0f; 
             }
         }
 
     }
+
+    IEnumerator punch()
+    {
+        canMove = false; 
+        Debug.Log("Not Moving");
+        yield return new WaitForSeconds(2); 
+        canPunch = true; 
+        yield return new WaitForSeconds(1);
+        canMove = true;
+
+    }
+    
 
     public void gotShot()
     {

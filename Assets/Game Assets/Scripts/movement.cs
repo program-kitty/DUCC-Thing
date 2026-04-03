@@ -208,7 +208,8 @@ float newRotationY = 0;
             
         }
 
-        transitionRotation = Mathf.Lerp(transform.localRotation.eulerAngles.y, newRotationY, Time.deltaTime * 10);
+        transitionRotation = newRotationY;
+        //transitionRotation = Mathf.Lerp(transform.localRotation.eulerAngles.y, newRotationY, Time.deltaTime * 10);
         transform.rotation = Quaternion.Euler(0,transitionRotation, 0);
 
         if (canMove)
@@ -231,7 +232,6 @@ float newRotationY = 0;
 
             rb.linearVelocity = new Vector3(changeX, rb.linearVelocity.y, changeZ);
         }
-
        
         //maybe a sphere raycast to see what's nearby? Collision detection? 
         //Options: Sphere raycast detecting when to limit x/z axis movement in a certain direction; collision pushing back

@@ -75,6 +75,7 @@ public class movement : MonoBehaviour
         {
             transform.Rotate(0,0.5f,0);
             transform.localScale *= 0.999f;
+            canMove = false; 
         }
         //Debug.Log(isGrounded);
     //create raycast to detect floor below
@@ -174,13 +175,16 @@ public class movement : MonoBehaviour
 
         Vector2 walkInput = walkAction.ReadValue<Vector2>(); //2 coords on movement
         
-    if (walkInput.sqrMagnitude > 0.01) //model rotation
+        if (! isDying)
         {
-            Vector3 walkingCoord = new Vector3(walkInput.x, 0, walkInput.y);
-            Quaternion targetRotation = Quaternion.LookRotation(walkingCoord); //look at input
-            float rotationSpeed = 720f; // degrees per second
+            if (walkInput.sqrMagnitude > 0.01) //model rotation
+                {
+                    Vector3 walkingCoord = new Vector3(walkInput.x, 0, walkInput.y);
+                    Quaternion targetRotation = Quaternion.LookRotation(walkingCoord); //look at input
+                    float rotationSpeed = 720f; // degrees per second
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime); //rotates slowly rather than immediate movement
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime); //rotates slowly rather than immediate movement
+                }
         }
 
         // float newRotationY = 0;
@@ -274,28 +278,18 @@ public class movement : MonoBehaviour
     void OnJump(InputAction.CallbackContext context) {
         if (isGrounded)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); //jump up, works if you're grounded
             isGrounded = false; 
+        } else
+        { //ground pound like Mario
+            rb.AddForce(Vector3.up * -jumpForce, ForceMode.Impulse); //if not grounded, then 'second jump' is actually a faster fall
         }
     }
-
-// void OnCollisionExit(Collision collision)
-//     {
-//         GameObject floor = collision.gameObject; 
-//         if (collision.gameObject.transform.position.y < rb.transform.position.y-rb.transform.localScale.y)
-//         {
-//             isGrounded = false; 
-//         } 
-//         if (collision.gameObject.tag == "world")
-//         {
-//             isGrounded = false; 
-//         }
-//     }
 
     void OnCollisionEnter(Collision collision) //for colliding with money
     {//couldn't use on money or health itself as it wouldn't allow prefabs to access scripts inside player
     //raycast sphere? 
-        if (collision.gameObject.tag == "money")
+        if (collision.gameObject.tag == "money") //get money
         {
             gotMoney();
             Destroy(collision.gameObject);
@@ -308,29 +302,12 @@ public class movement : MonoBehaviour
             gotBread(1);
             Destroy(collision.gameObject);
         }
-        else if (collision.gameObject.tag == "world")
+        else if (collision.gameObject.tag == "world") //additional isGrounded check
         {
             isGrounded = true; 
         }
-        // else if (collision.gameObject.transform.position.y < rb.transform.position.y-rb.transform.localScale.y)
-        // {
-        //     Debug.Log("IsTrue");
-        //     isGrounded = true;
-        // }
         
     }
-
-    // void OnCollisionStay(Collision collision)
-    // {
-    //     // if (collision.gameObject.transform.position.y < rb.transform.position.y-rb.transform.localScale.y)
-    //     // {
-    //     //     isGrounded = true;
-    //     // }
-    //     // if (collision.gameObject.tag == "world")
-    //     // {
-    //     //     isGrounded = true;
-    //     // } 
-    // }
 
     public IEnumerator spikeHit()
     {

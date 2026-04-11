@@ -34,7 +34,8 @@ public class SpikeScript : MonoBehaviour
             Rigidbody rb = hit.GetComponent<Rigidbody>(); 
             Vector3 pushDirection = Vector3.forward; 
             pushDirection = new Vector3(pushDirection.x, 1f, pushDirection.z);
-            rb.AddForce(pushDirection * 2f, ForceMode.Impulse);
+            rb.AddForce(transform.up, ForceMode.Impulse);
+            rb.AddForce(pushDirection * 2f, ForceMode.Impulse);        
         }
    }
 

@@ -19,6 +19,7 @@ public class playerReticle : MonoBehaviour {
     [SerializeField] bool isLocalAim;  // Right-stick aim type
     public float aimSensitivity = 1f;
     public float globalAimSensitivityDivider = 15f;
+    [SerializeField] bool disableAimUpDown;
     
     [Header("Objects")]
     [SerializeField] Transform gunMuzzle;  // Where to spawn the projectile
@@ -159,8 +160,8 @@ public class playerReticle : MonoBehaviour {
         // Cast ray from reticle
         RaycastHit hit;
         Ray ray = cam.ScreenPointToRay(aimCoordinate);
-        
-        if (Physics.Raycast(ray, out hit)) {
+        LayerMask layerMask = LayerMask.GetMask("Default", "TransparentFX", "Ground", "Collectibles");
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.UseGlobal)) {
             targetPoint = hit.point;  // Update targetPoint
             Transform objectHit = hit.transform;  // Get the Transform component of the hit object
 
@@ -181,6 +182,12 @@ public class playerReticle : MonoBehaviour {
                     reticleSprite.color = Color.white;
                     break;
             }
+
+            if (disableAimUpDown) {
+                targetPoint.y = playerObject.transform.position.y;  // Set Y-axis value to DUCC's position if Vertical Aiming is disabled
+            }
+
+            gunOrigin.LookAt(targetPoint, Vector3.up);   // Point gun at Aim Position
 
             // Gizmos
             Debug.DrawRay(ray.origin, ray.direction * 10, reticleSprite.color);

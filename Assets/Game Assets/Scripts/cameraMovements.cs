@@ -27,7 +27,7 @@ public class cameraMovements : MonoBehaviour
         if (endGame)
         {
             targetZ = player.transform.position.z - 3f;
-            targetY = 0.4f; 
+            targetY = player.transform.position.y + 0.4f; 
   
         } else
         {
@@ -36,6 +36,6 @@ public class cameraMovements : MonoBehaviour
         }
         targetX = player.transform.position.x;
 
-        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), Mathf.Lerp(transform.position.y, targetY, Time.deltaTime * speed), Mathf.Lerp(transform.position.z, targetZ, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
+        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), Mathf.Lerp(transform.position.y, targetY+3, Time.deltaTime * speed), Mathf.Lerp(transform.position.z, targetZ+1, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
     }
 }

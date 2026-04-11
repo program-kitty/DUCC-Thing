@@ -25,6 +25,7 @@ public class HealthMoneyScript : MonoBehaviour
         if (collision.gameObject.tag != "crate" && collision.gameObject.tag != "money")
         {
             collided = true;
+            startHeight = this.gameObject.transform.localPosition.y + 0.5f; 
             StartCoroutine(Despawn()); 
         }
     }

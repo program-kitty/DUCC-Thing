@@ -21,6 +21,9 @@ public class bulletScript : MonoBehaviour
 
     void OnTriggerEnter(Collider other) //when bullets collide with crate, tells crate to 'break'
     {
+
+        //sorry this script's a little messy :(
+        
         GameObject hit = other.gameObject; //more difficult to have crate detect; can detect a ton of things
         // if (firstCollide)
         // {

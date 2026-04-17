@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class ShootingEnemyScript : MonoBehaviour
@@ -11,6 +12,8 @@ public class ShootingEnemyScript : MonoBehaviour
     public float timer = 3f; 
     float distance; 
     float maxDistance = 10f; 
+    bool dying = false; 
+    bool isShooting = false; 
     Vector3 look; 
     bool startShooting = false; 
     public int health = 1; 
@@ -47,6 +50,9 @@ public class ShootingEnemyScript : MonoBehaviour
     }
     void Shoot()
     {
+        isShooting = true; 
+        //ANIMATION FOR SHOOTING HERE? (do you need a timer for it)
+        //isShooting bool
         //try having randomized angles on shooting     
         Vector3 randomRotation = new Vector3 (Random.Range(-1,1), Random.Range(-rRange,rRange), 0);
         transform.Rotate(randomRotation); //x is vertical, y is horizontal, z is sideways rotation 
@@ -59,6 +65,7 @@ public class ShootingEnemyScript : MonoBehaviour
         bulletScript.whoShot = this.gameObject; 
         projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; 
         Destroy(projectile,5f); //Destroy after 5 seconds
+        isShooting = false; 
     }
 
 
@@ -68,7 +75,19 @@ public class ShootingEnemyScript : MonoBehaviour
         if (health <= 0)
         {
             //probably use an ienumerator
-            Destroy(this.gameObject);
+            StartCoroutine(cappyDeath());
         }
+    }
+
+    IEnumerator cappyDeath()
+    {
+
+//ANIMATION FOR DYING HERE ***
+//dying bool
+        dying = true;
+        yield return new WaitForSeconds(1.5f); 
+        Destroy(this.gameObject);
+        dying = false; 
+
     }
 }

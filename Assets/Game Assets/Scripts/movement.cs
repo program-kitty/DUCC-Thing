@@ -18,6 +18,7 @@ public class movement : MonoBehaviour
     InputAction jumpAction; 
     float speed = 5.0f; 
     bool isGrounded = true; 
+    bool injured = false;
     bool isDying = false; 
     float jumpForce = 5f; 
     bool jumpNow = false; 
@@ -35,6 +36,7 @@ public class movement : MonoBehaviour
     [SerializeField] Camera cam; 
 
     Animator animator;
+    bool respawning = false;
     [SerializeField] GameObject duccModel;  // Package Object for DUCC Thing
 
     GameObject firstBullet; 
@@ -56,8 +58,13 @@ public class movement : MonoBehaviour
 
     void Start()
     {
-        Debug.Log(health);
+
         stage = managerScript.stage; 
+        if (managerScript.stage > 0)
+        {
+            StartCoroutine(respawn()); //anything more than zero is a checkpoint
+        }
+
         rb.freezeRotation = true; //prevents character from falling over when moving (was added when using velocity as motion, may not be required anymore but is good to have just in case)
         rb.transform.position = managerScript.spawnPoint; 
         cam.transform.position = new Vector3(managerScript.spawnPoint.x, 2.78f, managerScript.spawnPoint.z- 10f); 
@@ -327,6 +334,7 @@ public class movement : MonoBehaviour
     public IEnumerator spikeHit()
     {
         canMove = false; 
+        StartCoroutine(gotHurt());  
         yield return new WaitForSeconds(1.5f);
         canMove = true; 
     }
@@ -337,6 +345,10 @@ public class movement : MonoBehaviour
 
     public void gotBread(int x) //test this
     {
+        if (x < 0)
+        {
+            StartCoroutine(gotHurt());  
+        }
         health += x; 
         if (health > maxHealth)
         {
@@ -348,11 +360,31 @@ public class movement : MonoBehaviour
         }
     }
 
+    IEnumerator respawn()
+    {
+//RESPAWNING ANIMATION INCLUDED HERE *** 
+//using respawning bool
+        respawning = true; 
+        yield return new WaitForSeconds(1.5f);
+        respawning = false; 
+    }
+    public IEnumerator gotHurt()
+    {
+//GETTING HURT ANIMATION INCLUDED HERE *** 
+//using injured bool
+        injured = true;
+        yield return new WaitForSeconds(1.5f);
+        injured = false;
+    }
+
     public IEnumerator Death()
     {
         canMove = false; 
         isDying = true;
+//DYING ANIMATION INCLUDED HERE *** 
+//using isDying Bool
         yield return new WaitForSeconds(2);
+        isDying = false; //idk if this is needed tbh
         SceneManager.LoadScene(1);
         testCounter += 1;
     }

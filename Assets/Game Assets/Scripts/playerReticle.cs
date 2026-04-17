@@ -83,8 +83,11 @@ public class playerReticle : MonoBehaviour {
         var projectile = Instantiate(projectilePrefab, gunMuzzle.position, rotation);
         Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
         bulletScript bulletScript = projectileRb.GetComponent<bulletScript>();
-        bulletScript.shootingName = "Player"; 
+        bulletScript.shootingName = "Player"; //to help with collisions so you don't shoot yourself
         bulletScript.whoShot = this.gameObject; 
+        int ignorePlayerLayer = LayerMask.NameToLayer("bullet"); //so that player ignores player-made bullets; avoids any climbing wall glitches
+        projectile.layer = ignorePlayerLayer;
+
         projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; //makes sure all bullets are going same speed
         Destroy(projectile, 5f);  // Destroy after 5 seconds
     }

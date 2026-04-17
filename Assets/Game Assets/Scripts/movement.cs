@@ -12,7 +12,7 @@ using UnityEngine.SceneManagement;
 public class movement : MonoBehaviour
 {
     //[SerializeField] GameManagerScript gameManager; 
-     Rigidbody rb;
+    Rigidbody rb;
     InputAction walkAction;
     int testCounter = 1; 
     InputAction jumpAction; 
@@ -34,6 +34,9 @@ public class movement : MonoBehaviour
     GameManagerScript managerScript; 
     [SerializeField] Camera cam; 
 
+    Animator animator;
+    [SerializeField] GameObject duccModel;  // Package Object for DUCC Thing
+
     GameObject firstBullet; 
     //once dying becomes an option, should use this (affected by checkpoints) to determine spawn location
 
@@ -48,7 +51,7 @@ public class movement : MonoBehaviour
         //DontDestroyOnLoad(this.gameObject); 
         health = 3; 
         rb = GetComponent<Rigidbody>();
-         
+        animator = duccModel.GetComponent<Animator>();  // Get the component from the Ducc Thing model
     } 
 
     void Start()
@@ -119,7 +122,7 @@ public class movement : MonoBehaviour
 //(Vector3 center, Vector3 halfExtents, Quaternion orientation = Quaternion.identity,
 //using this kind of jump because raycast wasn't detecting ground if the player wasn't directly over it (only checking below center of player)
     Collider[] groundCollisions = Physics.OverlapBox(new Vector3(transform.position.x,transform.position.y - transform.localScale.y/2, transform.position.z), new Vector3(transform.localScale.x/2-0.05f, 0.18f, transform.localScale.z/2-0.05f), transform.rotation);
-    if (groundCollisions.Length > 2) //always contacting two parts: cylinder and player objects
+    if (groundCollisions.Length > 1) //always contacting two parts: cylinder and player objects
         {
             isGrounded = true; //if more than that, then must be contacting floor
         } else 
@@ -267,13 +270,24 @@ public class movement : MonoBehaviour
                 rb.linearVelocity = forward;
             }
        } else
-       {
+        {
            float changeX = Mathf.Lerp(rb.linearVelocity.x, 0, Time.deltaTime);
            float changeZ = Mathf.Lerp(rb.linearVelocity.z, 0, Time.deltaTime);
 
            rb.linearVelocity = new Vector3(changeX, rb.linearVelocity.y, changeZ);
-       }
+        }
+        
+       
+       
+       
+        #region Animation Controller
+        bool isWalking = false;
+        if (walkInput.x != 0 || walkInput.y != 0) { isWalking = true;}
 
+        // Apply variables to Animator
+        animator.SetBool("walking", isWalking);
+        animator.SetBool("grounded", isGrounded);
+        #endregion
     }
 
     void OnJump(InputAction.CallbackContext context) {

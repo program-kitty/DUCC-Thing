@@ -2238,8 +2238,8 @@ Transform:
   m_GameObject: {fileID: 831435344}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 64.6175, y: -8.61, z: 27.157}
-  m_LocalScale: {x: 70.84001, y: 24.0467, z: 72.61158}
+  m_LocalPosition: {x: 92.2229, y: -8.61, z: 27.157}
+  m_LocalScale: {x: 126.05272, y: 24.0467, z: 72.61158}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 535473369}
@@ -4851,6 +4851,7 @@ MonoBehaviour:
   playerMovement: {x: 0, y: 0, z: 0}
   finalMovements: {x: 0, y: 0, z: 0}
   stage: 0
+  canMove: 1
   cam: {fileID: 330585545}
 --- !u!54 &2066776782
 Rigidbody:

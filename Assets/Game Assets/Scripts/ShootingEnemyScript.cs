@@ -54,6 +54,9 @@ public class ShootingEnemyScript : MonoBehaviour
         //instantiating bullets - taken mostly from playerReticle
         var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation); 
         Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+        bulletScript bulletScript = projectileRb.GetComponent<bulletScript>();
+        bulletScript.shootingName = "enemy"; 
+        bulletScript.whoShot = this.gameObject; 
         projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; 
         Destroy(projectile,5f); //Destroy after 5 seconds
     }

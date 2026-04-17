@@ -134,7 +134,7 @@ public class movement : MonoBehaviour
         {
             if (groundCollisions[i].gameObject.tag == "bullet")
             {
-                if (groundCollisions[i].gameObject.GetComponent<bulletScript>().whoShot.gameObject.tag != this.gameObject.tag) //if its not your own bullets (bullet script has that info)
+                if (groundCollisions[i].gameObject.GetComponent<bulletScript>().shootingName != this.gameObject.tag) //if its not your own bullets (bullet script has that info)
                 {
                     if (firstBullet == null || firstBullet != groundCollisions[i].gameObject) //so you don't get propelled many times from one collision
                     {

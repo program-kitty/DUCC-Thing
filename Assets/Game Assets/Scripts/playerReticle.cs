@@ -82,6 +82,9 @@ public class playerReticle : MonoBehaviour {
         var rotation = Quaternion.LookRotation(direction);
         var projectile = Instantiate(projectilePrefab, gunMuzzle.position, rotation);
         Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+        bulletScript bulletScript = projectileRb.GetComponent<bulletScript>();
+        bulletScript.shootingName = "Player"; 
+        bulletScript.whoShot = this.gameObject; 
         projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; //makes sure all bullets are going same speed
         Destroy(projectile, 5f);  // Destroy after 5 seconds
     }

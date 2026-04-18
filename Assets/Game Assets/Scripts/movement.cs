@@ -35,7 +35,6 @@ public class movement : MonoBehaviour
     [SerializeField] Camera cam; 
 
     Animator animator;
-    [SerializeField] GameObject duccModel;  // Package Object for DUCC Thing
 
     GameObject firstBullet; 
     //once dying becomes an option, should use this (affected by checkpoints) to determine spawn location
@@ -51,7 +50,7 @@ public class movement : MonoBehaviour
         //DontDestroyOnLoad(this.gameObject); 
         health = 3; 
         rb = GetComponent<Rigidbody>();
-        animator = duccModel.GetComponent<Animator>();  // Get the component from the Ducc Thing model
+        animator = GetComponentInChildren<Animator>();  // Get the component from the model's GameObject
     } 
 
     void Start()

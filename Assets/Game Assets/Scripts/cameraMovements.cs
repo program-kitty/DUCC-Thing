@@ -10,6 +10,9 @@ public class cameraMovements : MonoBehaviour
     float targetZ; 
     public bool endGame = false; 
 
+//Camera refinement attempt
+    public GameObject cam;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -17,7 +20,7 @@ public class cameraMovements : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate() //Changed to Fixedupdate to reduce stuttering. -Okam was here.
     {
         transform.LookAt(player.transform); //looks at player -- should be easy to try to adapt it to also be influenced by reticle? 
 //ask about reticle
@@ -36,6 +39,10 @@ public class cameraMovements : MonoBehaviour
         }
         targetX = player.transform.position.x;
 
+        // transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), Mathf.Lerp(transform.position.y, targetY+3, Time.deltaTime * speed), Mathf.Lerp(transform.position.z, targetZ+1, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
+
+        //Expirimental camera fixes
         transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), Mathf.Lerp(transform.position.y, targetY+3, Time.deltaTime * speed), Mathf.Lerp(transform.position.z, targetZ+1, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
+
     }
 }

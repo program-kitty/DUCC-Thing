@@ -29,8 +29,8 @@ public class cameraMovements : MonoBehaviour
 
         if (endGame)
         {
-            targetZ = player.transform.position.z - 3f;
-            targetY = player.transform.position.y + 0.4f; 
+            targetZ = player.transform.position.z - 4.3f;
+            targetY = player.transform.position.y -2.3f; 
   
         } else
         {

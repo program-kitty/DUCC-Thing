@@ -10,7 +10,7 @@ public class bulletScript : MonoBehaviour
 {
     bool firstCollide = true; 
     Rigidbody rb; 
-    string shootingName;
+    public string shootingName;
     public GameObject whoShot;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,12 +22,13 @@ public class bulletScript : MonoBehaviour
     void OnTriggerEnter(Collider other) //when bullets collide with crate, tells crate to 'break'
     {
         GameObject hit = other.gameObject; //more difficult to have crate detect; can detect a ton of things
-        if (firstCollide)
-        {
-            shootingName = hit.tag;
-            whoShot = hit.gameObject;
-            firstCollide = false; //to know who shot the bullet! 
-        }
+        // if (firstCollide)
+        // {
+        //     shootingName = hit.tag;
+        //     whoShot = hit.gameObject;
+        //     firstCollide = false; //to know who shot the bullet! 
+        // }
+        // Debug.Log(shootingName); //New mechanic - annything that instantiates this will also manually input tags and gameobject for whoShot and shootingName
 //this part needs to be cleaned up :(
         if (hit.tag == "enemy" && !(hit.tag == shootingName)) //if hits an enemy (and an enemy didn't shoot)
         {

@@ -35,7 +35,6 @@ public class movement : MonoBehaviour
     [SerializeField] Camera cam; 
 
     Animator animator;
-    [SerializeField] GameObject duccModel;  // Package Object for DUCC Thing
 
     GameObject firstBullet; 
     //once dying becomes an option, should use this (affected by checkpoints) to determine spawn location
@@ -51,7 +50,7 @@ public class movement : MonoBehaviour
         //DontDestroyOnLoad(this.gameObject); 
         health = 3; 
         rb = GetComponent<Rigidbody>();
-        animator = duccModel.GetComponent<Animator>();  // Get the component from the Ducc Thing model
+        animator = GetComponentInChildren<Animator>();  // Get the component from the model's GameObject
     } 
 
     void Start()
@@ -134,7 +133,7 @@ public class movement : MonoBehaviour
         {
             if (groundCollisions[i].gameObject.tag == "bullet")
             {
-                if (groundCollisions[i].gameObject.GetComponent<bulletScript>().whoShot.gameObject.tag != this.gameObject.tag) //if its not your own bullets (bullet script has that info)
+                if (groundCollisions[i].gameObject.GetComponent<bulletScript>().shootingName != this.gameObject.tag) //if its not your own bullets (bullet script has that info)
                 {
                     if (firstBullet == null || firstBullet != groundCollisions[i].gameObject) //so you don't get propelled many times from one collision
                     {

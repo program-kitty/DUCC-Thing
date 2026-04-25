@@ -17,17 +17,15 @@ public class cameraMovements : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate() //changed it to fixed update to stop lag
     {
-        transform.LookAt(player.transform); //looks at player -- should be easy to try to adapt it to also be influenced by reticle? 
-//ask about reticle
 
         //mathfLerps to make it a little more graceful
 
         if (endGame)
         {
-            targetZ = player.transform.position.z - 3f;
-            targetY = player.transform.position.y + 0.4f; 
+            targetZ = player.transform.position.z - 4f;
+            targetY = player.transform.position.y-1.7f; //through trial and error looking at what looks better on ducc
   
         } else
         {
@@ -36,6 +34,9 @@ public class cameraMovements : MonoBehaviour
         }
         targetX = player.transform.position.x;
 
-        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), Mathf.Lerp(transform.position.y, targetY+3, Time.deltaTime * speed), Mathf.Lerp(transform.position.z, targetZ+1, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change
+        transform.position = new Vector3(Mathf.Lerp(transform.position.x, targetX, Time.deltaTime * speed), Mathf.Lerp(transform.position.y, targetY+3, Time.deltaTime * speed), Mathf.Lerp(transform.position.z, targetZ+1, Time.deltaTime * speed)); //follows player, stays behind them directly, height does not change 
+
+        transform.LookAt(player.transform); //looks at player -- should be easy to try to adapt it to also be influenced by reticle? 
+//ask about reticle
     }
 }

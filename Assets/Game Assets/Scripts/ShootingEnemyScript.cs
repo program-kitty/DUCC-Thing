@@ -1,9 +1,11 @@
 using UnityEngine;
+using System.Collections;
 
 public class ShootingEnemyScript : MonoBehaviour
 {
     [SerializeField] GameObject player; 
     [SerializeField] GameObject projectilePrefab; 
+    Animator animator;
 
     float counter = 0; 
     float projectileSpeed = 10; 
@@ -15,14 +17,12 @@ public class ShootingEnemyScript : MonoBehaviour
     bool startShooting = false; 
     public int health = 1; 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
+    void Start() {
+        animator = GetComponentInChildren<Animator>();  // Get the component from the model's GameObject
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         Vector3 target = player.transform.position; 
         Vector3 currentLocal = this.transform.position; 
         distance = Vector3.Distance(target,currentLocal);
@@ -40,13 +40,15 @@ public class ShootingEnemyScript : MonoBehaviour
             if (counter >= timer) //timer
             {
                 counter = 0; 
-                Shoot(); //shoot function - instantiating projectile
+                StartCoroutine(Shoot()); //shoot function - instantiating projectile
             }
         }
 
     }
-    void Shoot()
-    {
+    
+    IEnumerator Shoot() {
+        animator.SetTrigger("Attack.Pistol");  // Play Animation
+        yield return new WaitForSeconds(1.2f);
         //try having randomized angles on shooting     
         Vector3 randomRotation = new Vector3 (Random.Range(-1,1), Random.Range(-rRange,rRange), 0);
         transform.Rotate(randomRotation); //x is vertical, y is horizontal, z is sideways rotation 
@@ -54,6 +56,9 @@ public class ShootingEnemyScript : MonoBehaviour
         //instantiating bullets - taken mostly from playerReticle
         var projectile = Instantiate(projectilePrefab, transform.position, transform.rotation); 
         Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+        bulletScript bulletScript = projectileRb.GetComponent<bulletScript>();
+        bulletScript.shootingName = "enemy"; 
+        bulletScript.whoShot = this.gameObject; 
         projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; 
         Destroy(projectile,5f); //Destroy after 5 seconds
     }
@@ -61,10 +66,12 @@ public class ShootingEnemyScript : MonoBehaviour
 
     public void gotShot()
     {
+        animator.SetTrigger("Hit");  // Play Animation
         health -= 1; 
         if (health <= 0)
         {
             //probably use an ienumerator
+            animator.SetTrigger("Die");  // Play Animation
             Destroy(this.gameObject);
         }
     }

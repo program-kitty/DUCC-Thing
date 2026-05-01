@@ -22,39 +22,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.81
+      value: -30.24
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.66
+      value: -2.5689962
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 7.38
+      value: -36.91
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7071067
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.7071068
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -155,5 +155,5 @@ MonoBehaviour:
   loafNumber: 0
   moneyNumber: 3
   money: {fileID: 1088492816577877915, guid: 30782a0e88cf54d67b476865bb16b587, type: 3}
-  toast: {fileID: 0}
-  loaf: {fileID: 0}
+  toast: {fileID: 5460819174157216369, guid: d9851dfb114a542b7bebad7a5f678601, type: 3}
+  loaf: {fileID: 7514771404114718673, guid: f1fe60aac65fb4323aac1a9319474596, type: 3}

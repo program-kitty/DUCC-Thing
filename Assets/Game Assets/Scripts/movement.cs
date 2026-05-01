@@ -19,7 +19,7 @@ public class movement : MonoBehaviour
     float speed = 5.0f; 
     bool isGrounded = true; 
     bool isDying = false; 
-    float jumpForce = 5f; 
+    float jumpForce = 7f; //Marco was here. Buffing the jump height based on playtesting 
     bool jumpNow = false; 
     public Vector3 playerMovement; //want to use as a public variable for camera movements
     public Vector3 finalMovements; 

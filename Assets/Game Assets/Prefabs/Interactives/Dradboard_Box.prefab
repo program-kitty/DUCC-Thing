@@ -9,6 +9,18 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.632
       objectReference: {fileID: 0}
@@ -46,6 +58,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
+      propertyPath: m_ConstrainProportionsScale
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: b2bb8467fbd9b4a9c800b779612259e5, type: 3}
@@ -111,7 +127,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BreakCrateScript
   toastNumber: 0
   loafNumber: 0
-  moneyNumber: 7
-  money: {fileID: 0}
+  moneyNumber: 3
+  money: {fileID: 1088492816577877915, guid: 30782a0e88cf54d67b476865bb16b587, type: 3}
   toast: {fileID: 0}
   loaf: {fileID: 0}

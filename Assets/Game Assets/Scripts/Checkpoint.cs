@@ -47,11 +47,10 @@ public class Checkpoint : MonoBehaviour
                 Rigidbody loafRb = loafDropped.GetComponent<Rigidbody>();             
                 loafRb.AddForce(transform.forward, ForceMode.Impulse);  //a little launch upwards
             }
-            animator.SetBool("isPlayingAnimation", true);
-            //leave the variable here, doesn't work well on bullet side
 
             firstTimeHit = false; //can only shoot once to gain rewards
-            //Marco was here.
+            animator.SetBool("isPlayingAnimation", true); //leave the variable here, doesn't work well on bullet side
+            //Marco was here
         }
         
     }

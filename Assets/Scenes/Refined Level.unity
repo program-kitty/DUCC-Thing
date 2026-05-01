@@ -3215,6 +3215,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1383911993322483058, guid: ffc2207e4f4f743b68725424fac64546, type: 3}
+      propertyPath: m_ProvidesContacts
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3805122988708364780, guid: ffc2207e4f4f743b68725424fac64546, type: 3}
       propertyPath: movement
       value: 
@@ -11675,6 +11679,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4493867135238894444, guid: 10d6da8b73f1243a9a156875f4396caf, type: 3}
   localSmoothTime: 0.1
   globalSmoothTime: 0.3
+  cooldownSec: 0.5
 --- !u!4 &1486163149 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3061867905892900572, guid: d62b26e6e8dd846e2851855f2d73e998, type: 3}
@@ -15644,6 +15649,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 504161046356545446, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1986148211944954761, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.8000757
@@ -15684,6 +15693,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2785808915015367583, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 4294967295
+      objectReference: {fileID: 0}
+    - target: {fileID: 5021076119873802938, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5143221049280102860, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5143221049280102860, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
       propertyPath: m_TagString
       value: Player
@@ -15699,6 +15720,10 @@ PrefabInstance:
     - target: {fileID: 7395003106761759914, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
       propertyPath: m_Name
       value: PlayerObject
+      objectReference: {fileID: 0}
+    - target: {fileID: 8116881090806145642, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1974007841358814541, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}

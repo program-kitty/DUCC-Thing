@@ -76,20 +76,33 @@ public class playerReticle : MonoBehaviour {
 
     //     Debug.Log($"Reticle coordinates: {aimCoordinate}");
     // }
+    bool shootingCooldown = false; 
+    public float cooldownSec = 0.5f;
     
     void OnAttack(InputAction.CallbackContext context) {
         var direction = targetPoint - gunMuzzle.position;
         var rotation = Quaternion.LookRotation(direction);
-        var projectile = Instantiate(projectilePrefab, gunMuzzle.position, rotation);
-        Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
-        bulletScript bulletScript = projectileRb.GetComponent<bulletScript>();
-        bulletScript.shootingName = "Player"; //to help with collisions so you don't shoot yourself
-        bulletScript.whoShot = this.gameObject; 
-        int ignorePlayerLayer = LayerMask.NameToLayer("bullet"); //so that player ignores player-made bullets; avoids any climbing wall glitches
-        projectile.layer = ignorePlayerLayer;
+        if (!shootingCooldown)
+        {
+            StartCoroutine(Shooting());
+            var projectile = Instantiate(projectilePrefab, gunMuzzle.position, rotation);
+            Rigidbody projectileRb = projectile.GetComponent<Rigidbody>();
+            bulletScript bulletScript = projectileRb.GetComponent<bulletScript>();
+            bulletScript.shootingName = "Player"; //to help with collisions so you don't shoot yourself
+            bulletScript.whoShot = this.gameObject; 
+            int ignorePlayerLayer = LayerMask.NameToLayer("bullet"); //so that player ignores player-made bullets; avoids any climbing wall glitches
+            projectile.layer = ignorePlayerLayer;
 
-        projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; //makes sure all bullets are going same speed
-        Destroy(projectile, 5f);  // Destroy after 5 seconds
+            projectileRb.linearVelocity = projectileRb.transform.forward * projectileSpeed; //makes sure all bullets are going same speed
+            Destroy(projectile, 5f);  // Destroy after 5 seconds
+        }
+    }
+
+    private IEnumerator Shooting()
+    {
+        shootingCooldown = true;
+        yield return new WaitForSeconds(cooldownSec);
+        shootingCooldown = false;
     }
 
     void OnToggleAimMode(InputAction.CallbackContext context) {

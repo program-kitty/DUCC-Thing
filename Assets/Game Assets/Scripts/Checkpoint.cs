@@ -30,7 +30,7 @@ public class Checkpoint : MonoBehaviour
 
     public void Checked()
     {
-        Debug.Log("Script Activated");
+        Debug.Log("CHECKPOINT"); //Marco was here.
         if (firstTimeHit)
         {
             if (gameManagerScript.stage < checkPointNumber)
@@ -49,8 +49,11 @@ public class Checkpoint : MonoBehaviour
             }
             animator.SetBool("isPlayingAnimation", true);
             //leave the variable here, doesn't work well on bullet side
+
+            firstTimeHit = false; //can only shoot once to gain rewards
+            //Marco was here.
         }
-        firstTimeHit = false; //can only shoot once to gain rewards
+        
     }
 
 

@@ -12,6 +12,8 @@ public class HealthMoneyScript : MonoBehaviour
     private float counter = 0f;
     private float startHeight = 0.5f; 
     bool collided = false; 
+
+    float zRotate = 0;
     
     void Start()
     {
@@ -35,16 +37,35 @@ public class HealthMoneyScript : MonoBehaviour
     {
         if (collided) //if it hits ground (or anything, really - maybe debug if needed here), will start bobbing animation
         {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
-            transform.position = new Vector3(transform.position.x, (Mathf.Sin(counter)*bobHeight)+startHeight, transform.position.z); 
+            if(this.tag != "slice" || this.tag != "loaf") //money
+            {
+                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+                transform.position = new Vector3(transform.position.x, (Mathf.Sin(counter)*bobHeight)+startHeight, transform.position.z);  
+            } else //slice or loaf
+            {
+                transform.position = new Vector3(transform.position.x, (Mathf.Sin(counter)*bobHeight)+startHeight, transform.position.z);  
+            }
         }
+
+
         if (this.transform.rotation.eulerAngles.x != 0 || this.transform.rotation.eulerAngles.z != 0)
         {
             transform.rotation = Quaternion.Euler(0,0,0); //had a habit of turning around in air when affected by physics; prevents rotations
         }
+        if (this.tag == "slice" || this.tag == "loaf")
+        {
+            transform.rotation = Quaternion.Euler(-90,0,0); //for bread
+            transform.Rotate(0f,0f,zRotate, Space.Self);
+        } else
+        {
+            transform.Rotate(0f,0.1f,0f,Space.Self); //rotates around world, so stops revolving around istelf if sideways
+        }
 
+        zRotate += 0.1f; 
         counter+= 0.005f; //for slower and nicer animation of bobbing movement
-        transform.Rotate(0f,0.1f,0f,Space.World); //rotates around world, so stops revolving around istelf if sideways
+        //transform.Rotate(0f,0.1f,0f,Space.Self); //rotates around world, so stops revolving around istelf if sideways
+
+        //transform.localRotation = Quaternion.Euler(0, transform.localRotation.y + 1f, 0);
     }
 
     private IEnumerator Despawn()

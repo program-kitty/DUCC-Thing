@@ -13,6 +13,8 @@ TagManager:
   - world
   - checkpoint
   - manager
+  - slice
+  - loaf
   layers:
   - Default
   - TransparentFX

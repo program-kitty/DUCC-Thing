@@ -344,7 +344,7 @@ PrefabInstance:
     - target: {fileID: 3148313132260135066, guid: 1b9c31270e20347ecb16ff3ee2962638, type: 3}
       propertyPath: loaf
       value: 
-      objectReference: {fileID: 1088492816577877915, guid: 30782a0e88cf54d67b476865bb16b587, type: 3}
+      objectReference: {fileID: 7514771404114718673, guid: f1fe60aac65fb4323aac1a9319474596, type: 3}
     - target: {fileID: 3148313132260135066, guid: 1b9c31270e20347ecb16ff3ee2962638, type: 3}
       propertyPath: movement
       value: 
@@ -7499,10 +7499,6 @@ PrefabInstance:
     - target: {fileID: 4824857976392106943, guid: db743e4ace3e946928d317a34164c562, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5237976605501950697, guid: db743e4ace3e946928d317a34164c562, type: 3}
-      propertyPath: moneyNumber
-      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5313832394602551557, guid: db743e4ace3e946928d317a34164c562, type: 3}
       propertyPath: m_Name

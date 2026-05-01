@@ -24,8 +24,8 @@ public class cameraMovements : MonoBehaviour
 
         if (endGame)
         {
-            targetZ = player.transform.position.z - 4f;
-            targetY = player.transform.position.y-1.7f; //through trial and error looking at what looks better on ducc
+            targetZ = player.transform.position.z - 4.3f;
+            targetY = player.transform.position.y-2.3f; //through trial and error looking at what looks better on ducc
   
         } else
         {

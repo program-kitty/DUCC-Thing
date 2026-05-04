@@ -31,6 +31,7 @@ public class movement : MonoBehaviour
     public int stage = 0; 
     int rotationStage; 
     public bool canMove = true;
+    bool isJumping = false;
     GameObject manager;
     GameManagerScript managerScript; 
     [SerializeField] Camera cam; 
@@ -125,7 +126,6 @@ bool isStomping = false;
     Collider[] groundCollisions = Physics.OverlapBox(new Vector3(transform.position.x,transform.position.y - transform.localScale.y/2, transform.position.z), new Vector3(transform.localScale.x/2-0.05f, 0.18f, transform.localScale.z/2-0.05f), transform.rotation);
         for (int i=0; i<groundCollisions.Length; i++) //for everything in collision, checking if any of those we're 'standing' on is a bullet
         {
-            Debug.Log(groundCollisions[i] + "Number"+ groundCollisions.Length);
             if (groundCollisions[i].gameObject.tag == "bullet")
             {
                 if (groundCollisions[i].gameObject.GetComponent<bulletScript>().shootingName != this.gameObject.tag) //if its not your own bullets (bullet script has that info)
@@ -149,17 +149,20 @@ bool isStomping = false;
                     shootingScript.gotShot();
                 }
                 isStomping = false; 
+                isJumping = false;
             } else if (groundCollisions[i].gameObject.tag == "crate" && isStomping)
             {
                 BreakCrateScript crateScript = groundCollisions[i].GetComponent<BreakCrateScript>(); 
                 crateScript.crateHit(); 
                 isStomping = false; 
+                isJumping = false;
             }
         }
         if (groundCollisions.Length > 1) //always contacting player objects - bazooka is excluded
         {
             isGrounded = true; //if more than that, then must be contacting some sort of floor
             isStomping = false; 
+            isJumping = false;
         } else 
         {
             isGrounded = false;
@@ -310,28 +313,35 @@ bool isStomping = false;
     }
 
     void OnJump(InputAction.CallbackContext context) {
-        if (isGrounded)
+        if (isGrounded && !isStomping && !isJumping)
         {
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); //jump up, works if you're grounded
             isGrounded = false; 
+            isJumping = true;
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); //jump up, works if you're grounded
+
         } else
         { //ground pound like Mario
-            if (canStomp)
+            if (!isStomping)
             {
-                StartCoroutine(stompCooldown());
                 isStomping = true; 
                 rb.AddForce(Vector3.up * -jumpForce, ForceMode.Impulse); //if not grounded, then 'second jump' is actually a faster fall
             }
-
+            
+            // if (canStomp)
+            // {
+            //     StartCoroutine(stompCooldown());
+            //     isStomping = true; 
+            //     rb.AddForce(Vector3.up * -jumpForce, ForceMode.Impulse); //if not grounded, then 'second jump' is actually a faster fall
+            // }
         }
     }
 
-    public IEnumerator stompCooldown()
-    {
-        canStomp = false; 
-        yield return new WaitForSeconds(1); 
-        canStomp = true;
-    }
+    // public IEnumerator stompCooldown()
+    // {
+    //     canStomp = false; 
+    //     yield return new WaitForSeconds(1); 
+    //     canStomp = true;
+    // }
 
     void OnCollisionEnter(Collision collision) //for colliding with money
     {//couldn't use on money or health itself as it wouldn't allow prefabs to access scripts inside player
@@ -352,6 +362,7 @@ bool isStomping = false;
         else if (collision.gameObject.tag == "world") //additional isGrounded check
         {
             isGrounded = true; 
+            isJumping = false;
         }
         
     }

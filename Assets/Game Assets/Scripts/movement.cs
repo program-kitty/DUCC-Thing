@@ -132,7 +132,7 @@ bool isStomping = false;
                 {
                     if (firstBullet == null || firstBullet != groundCollisions[i].gameObject) //so you don't get propelled many times from one collision
                     {
-                        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+                        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z); //keeps jumps from compounding on each other, so no super randomly high bullet jumps or weak jumps after accelerating downward
                         rb.AddForce(Vector3.up*8f, ForceMode.Impulse);
                         isGrounded = false;//same stuff from jump function below (added more force because otherwise jumps were weak)
                         firstBullet = groundCollisions[i].gameObject; //makes sure only happens once per bullet
@@ -318,7 +318,7 @@ bool isStomping = false;
         {
             isGrounded = false; 
             isJumping = true;
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z); //keeps jumps from compounding on each other - in case of jumping multiple times (especially near edges)
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); //jump up, works if you're grounded
 
         } else

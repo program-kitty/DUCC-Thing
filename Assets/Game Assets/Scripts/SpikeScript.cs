@@ -26,6 +26,7 @@ public class SpikeScript : MonoBehaviour
                     Vector3 direction = rb.transform.forward;
                     direction *= -1f;
                     direction.y = 1f;
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z); 
                     rb.AddForce(direction * 3f, ForceMode.Impulse);
                  }
             }

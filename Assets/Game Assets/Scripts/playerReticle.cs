@@ -159,6 +159,30 @@ public class playerReticle : MonoBehaviour {
     }
 
     void Update() {
+/* 
+
+    [SerializeField] Transform gunMuzzle;  // Where to spawn the projectile
+    [SerializeField] Transform gunOrigin;  // Gun itself
+    [SerializeField] GameObject playerObject;
+
+*/
+        if (gunMuzzle == null)
+        {
+            //playerObject = GameObject.Find("PlayerObject");
+            gunMuzzle = GameObject.Find("Muzzle").transform;
+        }
+        if (gunOrigin == null)
+        {
+            //playerObject = GameObject.Find("PlayerObject");
+            gunOrigin = GameObject.Find("Bazooka").transform;
+        }
+        if (playerObject == null)
+        {
+            playerObject = GameObject.Find("PlayerObject");
+        
+        }
+
+
         // Update Reticle Position
         Vector2 aimInput = aimAction.ReadValue<Vector2>();  // Read stick input
 

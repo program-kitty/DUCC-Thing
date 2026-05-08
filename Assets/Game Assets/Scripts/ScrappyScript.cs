@@ -32,6 +32,10 @@ public class ScrappyScript : MonoBehaviour {
     }
 
     void Update() {
+        if (playerObject == null)
+        {
+            playerObject = GameObject.Find("PlayerObject");
+        }
         Vector3 target = playerObject.transform.position; 
         Vector3 currentLocal = this.transform.position; 
         distance = Vector3.Distance(target,currentLocal);

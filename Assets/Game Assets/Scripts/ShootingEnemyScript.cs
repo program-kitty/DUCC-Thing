@@ -23,6 +23,10 @@ public class ShootingEnemyScript : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        if (player == null)
+        {
+            player = GameObject.Find("PlayerObject");
+        }
         Vector3 target = player.transform.position; 
         Vector3 currentLocal = this.transform.position; 
         distance = Vector3.Distance(target,currentLocal);

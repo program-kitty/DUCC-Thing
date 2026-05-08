@@ -11675,6 +11675,8 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4493867135238894444, guid: 10d6da8b73f1243a9a156875f4396caf, type: 3}
   localSmoothTime: 0.1
   globalSmoothTime: 0.3
+  soundEffectVolume: 1
+  SHOOT_SOUND: {fileID: 8300000, guid: 1020d0f2454850947a3c1078fdaa43f8, type: 3}
   cooldownSec: 0.5
 --- !u!4 &1486163149 stripped
 Transform:

@@ -7970,6 +7970,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4493867135238894444, guid: 10d6da8b73f1243a9a156875f4396caf, type: 3}
   localSmoothTime: 0.1
   globalSmoothTime: 0.3
+  cooldownSec: 0.5
 --- !u!1001 &1502924629
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10478,8 +10479,7 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerObject
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 1974007841358814541, guid: 9fde831e09edf453396bd1e77bd9dffe, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

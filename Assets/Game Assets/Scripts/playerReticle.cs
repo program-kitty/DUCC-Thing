@@ -14,6 +14,7 @@ using System.Collections;
 
 [RequireComponent(typeof(Image))]
 [RequireComponent(typeof(RectTransform))]
+[RequireComponent(typeof(AudioSource))]
 public class playerReticle : MonoBehaviour {
     [Header("Game Settings")]
     [SerializeField] bool isLocalAim;  // Right-stick aim type
@@ -46,6 +47,11 @@ public class playerReticle : MonoBehaviour {
     Vector3 targetPoint;  // World coordinate the reticle is pointing at
     private Vector2 velocity = Vector2.zero;  // Used by SmoothDamp, do not modify!
     private float projectileSpeed = 10.0f; //speed for bullets 
+
+    [Header ("Sound Effects")]
+    public float soundEffectVolume = 1f;
+    AudioSource soundPlayer;
+    [SerializeField] AudioClip SHOOT_SOUND;
 
 
     #region Input Actions
@@ -100,6 +106,7 @@ public class playerReticle : MonoBehaviour {
 
     private IEnumerator Shooting()
     {
+        soundPlayer.PlayOneShot(SHOOT_SOUND, soundEffectVolume);  // Play sound effect
         shootingCooldown = true;
         yield return new WaitForSeconds(cooldownSec);
         shootingCooldown = false;
@@ -119,6 +126,8 @@ public class playerReticle : MonoBehaviour {
         aimAction = InputSystem.actions.FindAction("Aim");
         attackAction = InputSystem.actions.FindAction("Attack");
         toggleAimAction = InputSystem.actions.FindAction("Toggle Aim Mode");
+        
+        soundPlayer = GetComponent<AudioSource>();
     }
 
     void OnEnable() {

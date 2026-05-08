@@ -58,7 +58,7 @@ public class bulletScript : MonoBehaviour
             {
                 playerScript = hit.transform.parent.GetComponent<movement>(); //when it hits cylinder, gives error - this fixes that
             }
-            playerScript.gotBread(-1);    
+            playerScript.gotBread(-1);
         }
 
         if (hit.tag == "bullet")

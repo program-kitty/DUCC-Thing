@@ -13,13 +13,19 @@ public class cameraMovements : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        if (player == null)
+        {
+            player = GameObject.Find("PlayerObject");
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate() //changed it to fixed update to stop lag
     {
-
+        if (player == null)
+        {
+            player = GameObject.Find("PlayerObject");
+        }
         //mathfLerps to make it a little more graceful
 
         if (endGame)

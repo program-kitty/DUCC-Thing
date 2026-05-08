@@ -35,7 +35,7 @@ public class movement : MonoBehaviour
     GameObject manager;
     GameManagerScript managerScript; 
     [SerializeField] Camera cam; 
-
+    public static movement instance; 
     Animator animator;
 bool isStomping = false; 
     GameObject firstBullet; 
@@ -44,6 +44,17 @@ bool isStomping = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        DontDestroyOnLoad(this.gameObject);
+        
+        if (instance == null)
+        {
+            instance = this; 
+        } 
+        if (this != instance) 
+        {
+            Destroy(this.gameObject); //makes sure no duplicate scripts other than this 
+        }
+
         manager = GameObject.FindWithTag("manager"); 
         managerScript = manager.GetComponent<GameManagerScript>();
         //setting up values using input system - new input system        
@@ -57,11 +68,13 @@ bool isStomping = false;
 
     void Start()
     {
-        Debug.Log(health);
         stage = managerScript.stage; 
         rb.freezeRotation = true; //prevents character from falling over when moving (was added when using velocity as motion, may not be required anymore but is good to have just in case)
         rb.transform.position = managerScript.spawnPoint; 
+
+        cam = Camera.main;
         cam.transform.position = new Vector3(managerScript.spawnPoint.x, 2.78f, managerScript.spawnPoint.z- 10f); 
+         
     }
 
     void OnEnable() { //when you press the jump it doesn't repeat a million times
@@ -76,12 +89,23 @@ bool isStomping = false;
     // Update is called once per frame
     void Update()
     {
-
+        if (cam == null)
+        {
+            cam = Camera.main;
+        }
+        if (health >0)
+        {
+            isDying = false;
+        }
+        Debug.Log(health);
         if (isDying)
         {
             transform.Rotate(0,0.5f,0);
             transform.localScale *= 0.999f;
             canMove = false; 
+        } else
+        {
+            transform.localScale = new Vector3(1,1,1);
         }
         //Debug.Log(isGrounded);
     //create raycast to detect floor below
@@ -400,5 +424,10 @@ bool isStomping = false;
         yield return new WaitForSeconds(2);
         SceneManager.LoadScene(1);
         testCounter += 1;
+        transform.localScale = new Vector3(1,1,1);
+        isDying = false; 
+        health = 3; 
+        canMove = true; 
+        rb.transform.position = managerScript.spawnPoint; 
     }
 }

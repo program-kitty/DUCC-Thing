@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 8116881090806145642}
   - component: {fileID: 5703199359850549799}
   - component: {fileID: 32011937353932409}
-  - component: {fileID: 1974007841358814541}
+  - component: {fileID: 3866143357916895589}
   m_Layer: 7
   m_Name: PlayerObject
   m_TagString: Player
@@ -163,7 +163,11 @@ MonoBehaviour:
   stage: 0
   canMove: 1
   cam: {fileID: 0}
-  duccModel: {fileID: 9215175685366040469}
+  soundEffectVolume: 1
+  JUMP_SOUND: {fileID: 8300000, guid: 668dc1ad44c137941b89cb2abe1be02c, type: 3}
+  SLAM_SOUND: {fileID: 8300000, guid: 594f5b4698056604a8367b5de7b3d187, type: 3}
+  HURT_SOUND: {fileID: 8300000, guid: b11345a0f883f514697593ef0ffab469, type: 3}
+  SHOOT_SOUND: {fileID: 8300000, guid: 668dc1ad44c137941b89cb2abe1be02c, type: 3}
 --- !u!54 &32011937353932409
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -191,7 +195,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!82 &1974007841358814541
+--- !u!82 &3866143357916895589
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,11 +206,11 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 5814d1a2c18a9bf43b4cb54392db0683, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

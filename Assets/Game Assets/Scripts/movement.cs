@@ -8,9 +8,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-
+[RequireComponent(typeof(AudioSource))]
 public class movement : MonoBehaviour
 {
+    #region Variables
     //[SerializeField] GameManagerScript gameManager; 
     Rigidbody rb;
     InputAction walkAction;
@@ -37,9 +38,20 @@ public class movement : MonoBehaviour
     [SerializeField] Camera cam; 
     public static movement instance; 
     Animator animator;
-bool isStomping = false; 
+    bool isStomping = false;
+    
+    [Header("Sound Effects")]
+    public float soundEffectVolume = 1f;
+    AudioSource soundPlayer;
+    [SerializeField] AudioClip JUMP_SOUND;
+    [SerializeField] AudioClip SLAM_SOUND;
+    [SerializeField] AudioClip HURT_SOUND;
+    
+
     GameObject firstBullet; 
     //once dying becomes an option, should use this (affected by checkpoints) to determine spawn location
+
+    #endregion
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -64,6 +76,7 @@ bool isStomping = false;
         health = 3; 
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();  // Get the component from the model's GameObject
+        soundPlayer = GetComponent<AudioSource>();
     } 
 
     void Start()
@@ -148,8 +161,12 @@ bool isStomping = false;
 //(Vector3 center, Vector3 halfExtents, Quaternion orientation = Quaternion.identity,
 //using this kind of jump because raycast wasn't detecting ground if the player wasn't directly over it (only checking below center of player)
     Collider[] groundCollisions = Physics.OverlapBox(new Vector3(transform.position.x,transform.position.y - transform.localScale.y/2, transform.position.z), new Vector3(transform.localScale.x/2-0.05f, 0.18f, transform.localScale.z/2-0.05f), transform.rotation);
+        if (groundCollisions.Length > 1 && isStomping) {
+            soundPlayer.PlayOneShot(SLAM_SOUND, soundEffectVolume);  // Play sound effect
+        }
         for (int i=0; i<groundCollisions.Length; i++) //for everything in collision, checking if any of those we're 'standing' on is a bullet
         {
+            
             if (groundCollisions[i].gameObject.tag == "bullet")
             {
                 if (groundCollisions[i].gameObject.GetComponent<bulletScript>().shootingName != this.gameObject.tag) //if its not your own bullets (bullet script has that info)
@@ -345,6 +362,8 @@ bool isStomping = false;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z); //keeps jumps from compounding on each other - in case of jumping multiple times (especially near edges)
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse); //jump up, works if you're grounded
 
+            soundPlayer.PlayOneShot(JUMP_SOUND, soundEffectVolume);  // Play sound effect
+
         } else
         { //ground pound like Mario
             if (!isStomping)
@@ -406,7 +425,8 @@ bool isStomping = false;
 
     public void gotBread(int x) //test this
     {
-        health += x; 
+        if (x < 0) {soundPlayer.PlayOneShot(HURT_SOUND, soundEffectVolume);}  // Play sound effect
+        health += x;
         if (health > maxHealth)
         {
             health = maxHealth;

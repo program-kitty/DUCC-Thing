@@ -131,6 +131,7 @@ public class ScrappyScript : MonoBehaviour {
     
 
     public void gotShot() {
+        StartCoroutine( stopMovement(2.2f) );
         animator.SetTrigger("Hit");  // Play Animation
         health -= 1; 
         if (health <= 0)
@@ -138,5 +139,13 @@ public class ScrappyScript : MonoBehaviour {
             animator.SetTrigger("Die");  // Play Animation
             Destroy(this.gameObject);
         }
+    }
+
+    IEnumerator stopMovement(float duration) {
+        canMove = false;
+        canPunch = false;
+        yield return new WaitForSeconds(duration);
+        canMove = true;
+        canPunch = true;  // Allow the Scrappybara to punch again.
     }
 }

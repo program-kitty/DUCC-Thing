@@ -73,6 +73,7 @@ public class bulletScript : MonoBehaviour
         if (hit.tag == "checkpoint" && !(shootingName == "enemy")) //if player hits a checkpoint
         {
             Checkpoint checkpointScript = hit.GetComponent<Checkpoint>();
+            Destroy(this.gameObject);
 //            Debug.Log(hit.GetComponent<Checkpoint>());  -- even for 'bugged' checkpoints it still finds the script
             checkpointScript.Checked(); //checkpoint ups stage counter on movememnt (unable to do that here)                
             

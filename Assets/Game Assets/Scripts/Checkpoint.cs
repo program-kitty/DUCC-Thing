@@ -36,16 +36,16 @@ public class Checkpoint : MonoBehaviour
             if (gameManagerScript.stage < checkPointNumber)
             {
                 gameManagerScript.updateCheck(checkPointNumber); //what stage they're at 
-                gameManagerScript.newLocation(transform.position + transform.forward); //spawnpoint for character
+                gameManagerScript.newLocation(transform.position - transform.forward); //spawnpoint for character
             }
             //also add in healtlh impulse here! \/ \/ \/ \/
             for (int i = 0; i < loafNumber; i++) //This is for releasing each of the objects
             {
-                Vector3 firstLocal = transform.position + transform.forward; //shoots the loaves out of vending machine
+                Vector3 firstLocal = transform.position - transform.forward; //shoots the loaves out of vending machine
                 firstLocal.y += 0.5f; 
                 var loafDropped = Instantiate(loaf, firstLocal, transform.rotation);
                 Rigidbody loafRb = loafDropped.GetComponent<Rigidbody>();             
-                loafRb.AddForce(transform.forward, ForceMode.Impulse);  //a little launch upwards
+                loafRb.AddForce(transform.forward * -3f, ForceMode.Impulse);  //a little launch upwards
             }
 
             firstTimeHit = false; //can only shoot once to gain rewards

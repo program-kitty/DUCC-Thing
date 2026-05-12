@@ -23,6 +23,7 @@ public class WinningScript : MonoBehaviour
         if (hit.gameObject.tag == "Player")
         {
             movement.gotBread(100000);
+            movement.canDie = false; 
             StartCoroutine(Win());
         }
     }

@@ -29,6 +29,7 @@ public class movement : MonoBehaviour
     int maxHealth = 3;
     bool canStomp = true;
     int money = 0; 
+    public bool canDie = true;    
     public int stage = 0; 
     int rotationStage; 
     public bool canMove = true;
@@ -433,21 +434,27 @@ public class movement : MonoBehaviour
         }
         if (health <= 0)
         {
-            StartCoroutine(Death());
+            if (canDie)
+            {
+                StartCoroutine(Death());
+            }
         }
     }
 
     public IEnumerator Death()
     {
-        canMove = false; 
-        isDying = true;
-        yield return new WaitForSeconds(2);
-        SceneManager.LoadScene(1);
-        testCounter += 1;
-        transform.localScale = new Vector3(1,1,1);
-        isDying = false; 
-        health = 3; 
-        canMove = true; 
-        rb.transform.position = managerScript.spawnPoint; 
+        if (!isDying)
+        {
+            canMove = false; 
+            isDying = true;
+            yield return new WaitForSeconds(2);
+            SceneManager.LoadScene(1);
+            testCounter += 1;
+            transform.localScale = new Vector3(1,1,1);
+            isDying = false; 
+            health = 3; 
+            canMove = true; 
+            rb.transform.position = managerScript.spawnPoint;    
+        }
     }
 }

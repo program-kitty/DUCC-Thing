@@ -74,6 +74,7 @@ public class bulletScript : MonoBehaviour
         {
             Checkpoint checkpointScript = hit.GetComponent<Checkpoint>();
 //            Debug.Log(hit.GetComponent<Checkpoint>());  -- even for 'bugged' checkpoints it still finds the script
+            Destroy(this.gameObject);
             checkpointScript.Checked(); //checkpoint ups stage counter on movememnt (unable to do that here)                
             
         }

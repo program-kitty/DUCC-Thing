@@ -22,7 +22,8 @@ public class WinningScript : MonoBehaviour
         Debug.Log("You Win!");
         if (hit.gameObject.tag == "Player")
         {
-            movement.gotBread(100000);
+            movement.win = true;
+            movement.gotBread(100000000);
             StartCoroutine(Win());
         }
     }

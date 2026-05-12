@@ -36,7 +36,7 @@ public class movement : MonoBehaviour
     GameObject manager;
     GameManagerScript managerScript; 
     [SerializeField] Camera cam;
-
+public bool win = false; 
     Animator animator;
     bool isStomping = false;
     
@@ -402,7 +402,7 @@ public class movement : MonoBehaviour
     {
         if (x < 0) {soundPlayer.PlayOneShot(HURT_SOUND, soundEffectVolume);}  // Play sound effect
         health += x;
-        if (health > maxHealth)
+        if (health > maxHealth && !win)
         {
             health = maxHealth;
         }

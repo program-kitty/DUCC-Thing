@@ -1,4 +1,5 @@
-using UnityEditor.SceneManagement;
+// using UnityEditor.SceneManagement;
+// Okam was here
 using UnityEngine;
 
 public class Checkpoint : MonoBehaviour

@@ -2,7 +2,8 @@ using System.Collections;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.Callbacks;
+// using UnityEditor.Callbacks;
+// Okam was here.
 using UnityEngine;
 
 public class HealthMoneyScript : MonoBehaviour

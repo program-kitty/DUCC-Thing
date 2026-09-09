@@ -14,8 +14,8 @@ public class ScrappyScript : MonoBehaviour {
     [SerializeField] movement playerScript; 
     Rigidbody rb;
     Animator animator;
-    
-    float speed = 3f;
+
+    float speed = 6f; //Sped up Scrappybara
     Vector3 movement; 
     float distance;
     bool canMove = false; 
@@ -32,19 +32,20 @@ public class ScrappyScript : MonoBehaviour {
     }
 
     void Update() {
-        if (playerObject == null)
+        if (playerObject == null) 
         {
             playerObject = GameObject.Find("PlayerObject");
         }
         Vector3 target = playerObject.transform.position; 
         Vector3 currentLocal = this.transform.position; 
         distance = Vector3.Distance(target,currentLocal);
-
+ 
         if (distance < maxDistance && canPunch) {
             canMove = true; //so they start only after a certain distance
             animator.SetBool("walking", true);  // Play Animation
         } else {
             animator.SetBool("walking", false);
+            canMove = false; //Makes scrappy stop moving.
         }
 
         if (canMove && distance > 2 && health > 0) {
@@ -69,7 +70,7 @@ public class ScrappyScript : MonoBehaviour {
         }
 
         RaycastHit hit; 
-        //Punch Mechanic
+        //Punch Mechanic.
         if ( canPunch && Physics.Raycast(transform.position, transform.forward, out hit, 2.5f) ) { //2.5 is maxdistance 
             if (hit.transform.gameObject != null) {  // If object is in the way
                 canPunch = false;  // Apply punch cooldown
@@ -83,7 +84,7 @@ public class ScrappyScript : MonoBehaviour {
                         if (counter >= 2) {
                             StartCoroutine(punch());  // Attempt to hit the player with a punch
                         } else {
-                            canMove = true;
+                            canMove = true; // Allow Scrappybara to move again.
                             canPunch = true;  // Allow the Scrappybara to punch again.
                         }
                         break;
@@ -111,16 +112,24 @@ public class ScrappyScript : MonoBehaviour {
     IEnumerator punch() {  // Attempt to hit the player with a punch
         
         Debug.Log("Not Moving");
-        yield return new WaitForSeconds(0.8f);
+        yield return new WaitForSeconds(1f);
         
         // Test if punch landed.
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, 2.5f) ) { //2.5 is maxdistance 
             if (hit.transform.gameObject != null) {  // If object is in the way
                 string tag = hit.transform.gameObject.tag;  // Get tag of obstacle
-                if (tag == "Player") {
+                if (tag == "Player") { //How player takes damage
                     playerScript.gotBread(-1);
-                    Debug.Log("Took Damage!");
+                    Debug.Log("Owie");
+
+
+                    //I want DUCC Thing to go flying after a punch. How to call the player's body?
+                    Vector3 direction = rb.transform.forward;
+                    direction *= -5f;
+                    direction.y = 3f;
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z); 
+                    rb.AddForce(direction * 3f, ForceMode.Impulse);
                 }
             }
         }
@@ -131,13 +140,16 @@ public class ScrappyScript : MonoBehaviour {
     
 
     public void gotShot() {
+        //Make scrappy stop moving for a bit while down.
         StartCoroutine( stopMovement(2.2f) );
-        animator.SetTrigger("Hit");  // Play Animation
+        animator.SetTrigger("Hit");  // Import hit animation rather than die.
         health -= 1; 
         if (health <= 0)
         {
+            //Play a death sound here.
             animator.SetTrigger("Die");  // Play Animation
-            Destroy(this.gameObject);
+            Destroy(this.gameObject); //Gets rid of the scrappy.
+            
         }
     }
 

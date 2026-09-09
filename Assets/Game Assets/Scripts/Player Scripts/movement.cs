@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Pool;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(AudioSource))]
@@ -17,7 +18,9 @@ public class movement : MonoBehaviour
     InputAction walkAction;
     int testCounter = 1; 
     InputAction jumpAction; 
-    float speed = 5.0f; 
+    float speed = 5.0f; //How to make this module since I plan to add a run button.
+
+    bool isRunning = false; //Button down = run. Button up = walk.
     bool isGrounded = false; 
     bool isDying = false; 
     float jumpForce = 7f; //Marco was here. Buffing the jump height based on playtesting 
@@ -34,6 +37,10 @@ public class movement : MonoBehaviour
     int rotationStage; 
     public bool canMove = true;
     bool isJumping = false;
+
+    //Can jump should be a thing here
+
+    private bool canJump = true;
     GameObject manager;
     GameManagerScript managerScript; 
     [SerializeField] Camera cam; 
@@ -47,6 +54,9 @@ public class movement : MonoBehaviour
     [SerializeField] AudioClip JUMP_SOUND;
     [SerializeField] AudioClip SLAM_SOUND;
     [SerializeField] AudioClip HURT_SOUND;
+    [SerializeField] AudioClip DEATH_SOUND;
+    [SerializeField] AudioClip MONEY_SOUND;
+    [SerializeField] AudioClip BREAD_SOUND;
     
 
     GameObject firstBullet; 
@@ -107,18 +117,23 @@ public class movement : MonoBehaviour
         {
             cam = Camera.main;
         }
-        if (health >0)
+        if (health > 0) //If alive
         {
             isDying = false;
         }
-        Debug.Log(health);
-        if (isDying)
+        Debug.Log(health); //Reports Current Health.
+        if (isDying) //Death animation 
         {
-            transform.Rotate(0,0.5f,0);
-            transform.localScale *= 0.999f;
-            canMove = false; 
-        } else
+            //transform.Rotate(0,1.0f,0);
+            //transform.localScale *= 0.999f;   
+            //(New Death Animation)
+            Debug.Log("I am ded");
+            animator.SetTrigger("Die"); //Triggers death animation.
+            canMove = false; //Removes movement while dying.
+
+        } else //Keeps scale in check when alive
         {
+            //Might not need this anymore tbh.
             transform.localScale = new Vector3(1,1,1);
         }
         //Debug.Log(isGrounded);
@@ -182,8 +197,10 @@ public class movement : MonoBehaviour
                 }
             } else if (groundCollisions[i].gameObject.tag == "enemy" && isStomping)
             {
+                //Grabs enemy scripts. Update as this goes onward.
                 ScrappyScript scrappyscript = groundCollisions[i].GetComponent<ScrappyScript>();
                 ShootingEnemyScript shootingScript = groundCollisions[i].GetComponent<ShootingEnemyScript>();
+
                 if (scrappyscript != null)
                 {
                     scrappyscript.gotShot();
@@ -199,6 +216,7 @@ public class movement : MonoBehaviour
                 crateScript.crateHit(); 
                 isStomping = false; 
                 isJumping = false;
+                //Add a sound effect
             }
         }
         if (groundCollisions.Length > 1) //always contacting player objects - bazooka is excluded
@@ -206,6 +224,7 @@ public class movement : MonoBehaviour
             isGrounded = true; //if more than that, then must be contacting some sort of floor
             isStomping = false; 
             isJumping = false;
+            //canMove = true; //You can move again after the stomp. (Appears to mess with everything else.)
         } else 
         {
             isGrounded = false;
@@ -242,6 +261,8 @@ public class movement : MonoBehaviour
 //alien.transform.rotation = Quaternion.Slerp (alien.transform.rotation, Quaternion.LookRotation (movementDirection), Time.deltaTime * 40f);
         // the 0.01f is your input deadzone.
 
+
+        //Walking and rotations
         Vector2 walkInput = walkAction.ReadValue<Vector2>(); //2 coords on movement
         
         if (! isDying)
@@ -250,7 +271,7 @@ public class movement : MonoBehaviour
                 {
                     Vector3 walkingCoord = new Vector3(walkInput.x, 0, walkInput.y);
                     Quaternion targetRotation = Quaternion.LookRotation(walkingCoord); //look at input
-                    float rotationSpeed = 720f; // degrees per second
+                    float rotationSpeed = 90000000f; // degrees per second (Buffed from 720. Okam was here. Improves rotation speed especially for keyboard players.)
 
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime); //rotates slowly rather than immediate movement
                 }
@@ -343,8 +364,6 @@ public class movement : MonoBehaviour
         }
         
        
-       
-       
         #region Animation Controller
         bool isWalking = false;
         if (walkInput.x != 0 || walkInput.y != 0) { isWalking = true;}
@@ -352,11 +371,15 @@ public class movement : MonoBehaviour
         // Apply variables to Animator
         animator.SetBool("walking", isWalking);
         animator.SetBool("grounded", isGrounded);
+        animator.SetBool("Die", isDying);
+        animator.SetBool("Stomp", isStomping);
+//Import and get these animations working.
+        //animator.SetBool("hit");
         #endregion
     }
 
     void OnJump(InputAction.CallbackContext context) {
-        if (isGrounded && !isStomping && !isJumping)
+        if (isGrounded && !isStomping && !isJumping && canJump)
         {
             isGrounded = false; 
             isJumping = true;
@@ -369,8 +392,11 @@ public class movement : MonoBehaviour
         { //ground pound like Mario
             if (!isStomping)
             {
+                //Import Stomp animation here.
+                animator.SetTrigger("Stomp"); // Needs animation for this
                 isStomping = true; 
-                rb.AddForce(Vector3.up * -jumpForce, ForceMode.Impulse); //if not grounded, then 'second jump' is actually a faster fall
+                //canMove = false; Messes with too many variables.
+                rb.AddForce(Vector3.up * -jumpForce*2, ForceMode.Impulse); //if not grounded, then 'second jump' is actually a faster fall.
             }
             
             // if (canStomp)
@@ -396,14 +422,19 @@ public class movement : MonoBehaviour
         {
             gotMoney();
             Destroy(collision.gameObject);
+            soundPlayer.PlayOneShot(MONEY_SOUND, soundEffectVolume);
+
         } else if (collision.gameObject.tag == "loaf") //test these
         {
             gotBread(3);
             Destroy(collision.gameObject);
+            soundPlayer.PlayOneShot(BREAD_SOUND, soundEffectVolume);
+
         } else if (collision.gameObject.tag == "slice") //test these
         {
             gotBread(1);
             Destroy(collision.gameObject);
+            soundPlayer.PlayOneShot(BREAD_SOUND, soundEffectVolume);
         }
         else if (collision.gameObject.tag == "world") //additional isGrounded check
         {
@@ -416,8 +447,10 @@ public class movement : MonoBehaviour
     public IEnumerator spikeHit()
     {
         canMove = false; 
-        yield return new WaitForSeconds(1.5f);
+        animator.SetTrigger("Hit"); //Play hit animation here. (But thy it play when I get on the ground?)
+        yield return new WaitForSeconds(1.5f); //Buffed from 1.5 to 1 second. (Okam was here)
         canMove = true; 
+        
     }
     public void gotMoney()
     {
@@ -445,15 +478,21 @@ public class movement : MonoBehaviour
     {
         if (!isDying)
         {
+            //Dying
+            soundPlayer.PlayOneShot(DEATH_SOUND, soundEffectVolume); //Plays death sound once and does not interfere with background music here.
             canMove = false; 
+            canJump = false;
             isDying = true;
-            yield return new WaitForSeconds(2);
-            SceneManager.LoadScene(1);
+            yield return new WaitForSeconds(3); //Wait for a short while before dying
+
+            //Reloads the scene.
+            SceneManager.LoadScene(1); //How can I make this reload the current scene? 
             testCounter += 1;
             transform.localScale = new Vector3(1,1,1);
             isDying = false; 
             health = 3; 
-            canMove = true; 
+            canMove = true;
+            canJump = true;
             rb.transform.position = managerScript.spawnPoint;    
         }
     }
